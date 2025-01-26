@@ -1,0 +1,4 @@
+**/node_modules
+
+# Galree config file
+galree.jsonc

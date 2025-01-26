@@ -1,0 +1,58 @@
+{
+  "version": "4",
+  "specifiers": {
+    "jsr:@eta-dev/eta@*": "3.5.0",
+    "jsr:@eta-dev/eta@^3.5.0": "3.5.0",
+    "jsr:@nandi/color@^0.0.4": "0.0.4",
+    "jsr:@openjs/random-color@1.0.1": "1.0.1",
+    "jsr:@std/cli@^1.0.11": "1.0.11",
+    "jsr:@std/collections@^1.0.9": "1.0.10",
+    "jsr:@std/json@1": "1.0.1",
+    "jsr:@std/jsonc@^1.0.1": "1.0.1",
+    "jsr:@std/toml@^1.0.2": "1.0.2"
+  },
+  "jsr": {
+    "@eta-dev/eta@3.5.0": {
+      "integrity": "6b70827efc14c7cbf08498ac7a922ecab003641caf3852a6cb5b1b12ee58fb37"
+    },
+    "@nandi/color@0.0.4": {
+      "integrity": "9c4a36845746d559a654b17f52c0b0706c34b7e1f77b916f1ad65dd6847a4051",
+      "dependencies": [
+        "jsr:@openjs/random-color"
+      ]
+    },
+    "@openjs/random-color@1.0.1": {
+      "integrity": "7b3692f171ce07adaed545a7bdacf5b03f04b2cd6c0f02535cbf9ea5c9d2ae20"
+    },
+    "@std/cli@1.0.11": {
+      "integrity": "ec219619fdcd31bcf0d8e53bee1e2706ec9a02f70255365a094f69755dadd340"
+    },
+    "@std/collections@1.0.10": {
+      "integrity": "903af106a3d92970d74e20f7ebff77d9658af9bef4403f1dc42a7801c0575899"
+    },
+    "@std/json@1.0.1": {
+      "integrity": "1f0f70737e8827f9acca086282e903677bc1bb0c8ffcd1f21bca60039563049f"
+    },
+    "@std/jsonc@1.0.1": {
+      "integrity": "6b36956e2a7cbb08ca5ad7fbec72e661e6217c202f348496ea88747636710dda",
+      "dependencies": [
+        "jsr:@std/json"
+      ]
+    },
+    "@std/toml@1.0.2": {
+      "integrity": "5892ba489c5b512265a384238a8fe8dddbbb9498b4b210ef1b9f0336a423a39b",
+      "dependencies": [
+        "jsr:@std/collections"
+      ]
+    }
+  },
+  "workspace": {
+    "dependencies": [
+      "jsr:@eta-dev/eta@^3.5.0",
+      "jsr:@nandi/color@^0.0.4",
+      "jsr:@std/cli@^1.0.11",
+      "jsr:@std/jsonc@^1.0.1",
+      "jsr:@std/toml@^1.0.2"
+    ]
+  }
+}

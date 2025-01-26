@@ -1,0 +1,27 @@
+{
+  "tasks": {
+    "build-dev": "deno run --check --allow-read --allow-write --allow-run src/build.ts --dev",
+    "build": "deno run --check --allow-read --allow-write --allow-run src/build.ts",
+    "run-dev": "deno run  --allow-read --allow-run src/run-dev.ts"
+  },
+  "imports": {
+    "@eta-dev/eta": "jsr:@eta-dev/eta@^3.5.0",
+    "@nandi/color": "jsr:@nandi/color@^0.0.4",
+    "@std/cli": "jsr:@std/cli@^1.0.11",
+    "@std/jsonc": "jsr:@std/jsonc@^1.0.1",
+    "@std/toml": "jsr:@std/toml@^1.0.2"
+  },
+  "lint": {
+    "include": ["src/"]
+  },
+  "fmt": {
+    "useTabs": true,
+    "lineWidth": 80,
+    "indentWidth": 4,
+    "semiColons": true,
+    "singleQuote": true,
+    "proseWrap": "preserve",
+    "include": ["src/"],
+    "exclude": ["src/testdata/", "src/fixtures/**/*.ts"]
+  }
+}
