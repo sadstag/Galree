@@ -1,6 +1,7 @@
 import { parse } from '@std/jsonc';
 
 export type GalreeConfig = {
+	GCPProjectId: string;
 	defaultCodomain: string;
 	sites: {
 		[key: string]: SiteConfig;
@@ -8,6 +9,7 @@ export type GalreeConfig = {
 };
 
 export type SiteConfig = {
+	siteId: string;
 	title: string;
 	siteAdminGoogleAccount: string;
 	googleSheetId: string;
@@ -60,37 +62,23 @@ export async function readGalreeConfigFromFile(
 function validateGalreeConfig(
 	config: unknown,
 ): ValidationResult<GalreeConfig> {
-	if (typeof config !== 'object' || config === null) {
+	if (!isRecord(config)) {
 		return {
 			isValid: false,
 			error: 'Config must be an object',
 		};
 	}
-	if (
-		!('defaultCodomain' in config &&
-			typeof config['defaultCodomain'] === 'string' &&
-			config['defaultCodomain'].length > 0)
-	) {
-		return {
-			isValid: false,
-			error:
-				'Missing field "defaultCodomain" or not string-valued or empty',
-		};
-	}
-	if (
-		!('sites' in config && typeof config['sites'] === 'object' &&
-			config['sites'] !== null)
-	) {
-		return {
-			isValid: false,
-			error: 'Missing field "sites" or not an object',
-		};
-	}
 
-	if (Object.entries(config['sites']).length === 0) {
+	ensureNonEmptyStringField(config, 'GCPProjectId');
+	ensureNonEmptyStringField(config, 'defaultCodomain');
+
+	if (
+		!('sites' in config && isRecord(config['sites']) &&
+			Object.entries(config['sites']).length > 0)
+	) {
 		return {
 			isValid: false,
-			error: 'Field "sites" object is empty',
+			error: 'Missing field "sites" or not an object or empty',
 		};
 	}
 
@@ -99,13 +87,14 @@ function validateGalreeConfig(
 			config['sites'] as Record<string, unknown>,
 		)
 	) {
-		const validationResult = validateSiteConfig(siteConfig);
+		const validationResult = validateSiteConfig(siteId, siteConfig);
 		if (!validationResult.isValid) {
 			return {
 				isValid: false,
 				error: 'Site "' + siteId + '": ' + validationResult.error,
 			};
 		}
+		config['sites'][siteId] = validationResult.config;
 	}
 
 	const galreeConfig = config as GalreeConfig;
@@ -130,58 +119,20 @@ function validateGalreeConfig(
 }
 
 export function validateSiteConfig(
+	siteId: string,
 	siteConfig: unknown,
 ): ValidationResult<SiteConfig> {
-	if (!(typeof siteConfig === 'object') || siteConfig === null) {
+	if (!isRecord(siteConfig)) {
 		return {
 			isValid: false,
-			error: 'config is not an object',
+			error: 'some site config is not an object',
 		};
 	}
 
-	if (
-		!('title' in siteConfig &&
-			typeof siteConfig['title'] === 'string' &&
-			siteConfig['title'].length > 0)
-	) {
-		return {
-			isValid: false,
-			error: 'missing field "title" or not string-valued or empty',
-		};
-	}
-
-	if (
-		!('siteAdminGoogleAccount' in siteConfig &&
-			typeof siteConfig['siteAdminGoogleAccount'] === 'string')
-	) {
-		return {
-			isValid: false,
-			error:
-				'missing field "siteAdminGoogleAccount" or not string-valued',
-		};
-	}
-
-	if (
-		!('googleSheetId' in siteConfig &&
-			typeof siteConfig['googleSheetId'] === 'string' &&
-			siteConfig['googleSheetId'].length > 0)
-	) {
-		return {
-			isValid: false,
-			error:
-				'missing field "googleSheetId" or not string-valued or empty',
-		};
-	}
-
-	if (
-		!('subdomain' in siteConfig &&
-			typeof siteConfig['subdomain'] === 'string')
-	) {
-		return {
-			isValid: false,
-			error: 'missing field "subdomain" or not string-valued',
-		};
-	}
+	ensureNonEmptyStringField(siteConfig, 'title');
+	ensureNonEmptyStringField(siteConfig, 'siteAdminGoogleAccount');
+	ensureNonEmptyStringField(siteConfig, 'googleSheetId');
+	ensureNonEmptyStringField(siteConfig, 'subdomain');
 
 	if (
 		!('online' in siteConfig && typeof siteConfig['online'] === 'boolean')
@@ -194,6 +145,25 @@ export function validateSiteConfig(
 
 	return {
 		isValid: true,
-		config: siteConfig as SiteConfig,
+		config: { ...siteConfig, siteId } as SiteConfig,
 	};
+}
+
+function isRecord(tested: unknown): tested is Record<string, unknown> {
+	return typeof tested === 'object' && tested !== null;
+}
+
+function ensureNonEmptyStringField(
+	object: Record<string, unknown>,
+	fieldName: string,
+) {
+	if (
+		!(fieldName in object &&
+			typeof object[fieldName] === 'string' &&
+			object[fieldName].length > 0)
+	) {
+		throw Error(
+			'missing field "googleSheetId" or not string-valued or empty',
+		);
+	}
 }

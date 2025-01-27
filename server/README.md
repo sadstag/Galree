@@ -7,6 +7,8 @@ then
 deno install
 ```
 
+Install the [gcloud CLI](https://cloud.google.com/sdk/docs/install).
+
 ## Stack
 
 [Deno](https://deno.com/) embeds [Static Web Server 2](https://static-web-server.net/) to server public and admin fronts static files of all sites in a [Docker](https://www.docker.com/) image.
@@ -18,6 +20,7 @@ File `galree.jsonc` in the root of the working copy
 
 ```jsonc
 {
+	"GCPProjectId": "...",
 	"defaultCodomain": "foo.art",
 	"sites": {
 		"site id 1": {
@@ -33,17 +36,31 @@ File `galree.jsonc` in the root of the working copy
 
 ## tasks
 
+### authentication on GCP
+
+Some tasks need you to be authenticated on GCP.
+
+```shell
+gcloud auth application-default login
+```
+
+### provisionning resources on GCP
 build the dev docker image:
+```shell
+deno run provision
+```
+
+### building the dev docker image
 ```shell
 deno run build-dev
 ```
 
-run the dev docker image to test things locally:
+### running the dev docker image to test things locally
 ```shell
 deno run run-dev
 ```
 
-build the prod docker image:
+### building the prod docker image
 ```shell
 deno run build
 ```
