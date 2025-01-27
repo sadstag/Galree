@@ -31,20 +31,39 @@ export function prepareTempDirectory(folderPath: string) {
 	}
 
 	try {
-		Deno.mkdirSync(folderPath + '/galree/assets');
+		Deno.mkdirSync(folderPath + '/galree/common/public/assets', {
+			recursive: true,
+		});
 	} catch (e) {
 		throw Error(
-			'Could not create assets directory (' + folderPath +
-				'/galree/assets' +
+			'Could not create public assets directory (' + folderPath +
+				'/galree/common/public/assets' +
+				'): ' + (e as Error).message,
+		);
+	}
+
+	try {
+		Deno.mkdirSync(folderPath + '/galree/common/admin/assets', {
+			recursive: true,
+		});
+	} catch (e) {
+		throw Error(
+			'Could not create admin assets directory (' + folderPath +
+				'/galree/common/admin/assets' +
 				'): ' + (e as Error).message,
 		);
 	}
 
 	Deno.copyFileSync('const_files/404.html', folderPath + '/404.html');
 	Deno.copyFileSync('const_files/50x.html', folderPath + '/50x.html');
+
 	Deno.copyFileSync(
-		'const_files/test.png',
-		folderPath + '/galree/assets/test.png',
+		'const_files/test_public_asset.png',
+		folderPath + '/galree/common/public/assets/test_public_asset.png',
+	);
+	Deno.copyFileSync(
+		'const_files/test_admin_asset.png',
+		folderPath + '/galree/common/admin/assets/test_admin_asset.png',
 	);
 }
 
@@ -68,13 +87,25 @@ export function createSiteFolder(dockerFSFolderPath: string, siteId: string) {
 	}
 	try {
 		Deno.symlinkSync(
-			'../../assets',
+			'../../common/public/assets',
 			siteFolderpath + '/assets',
 		);
 	} catch (e) {
 		throw Error(
-			'Could not create assets symlink (' + siteFolderpath +
+			'Could not create public assets symlink (' + siteFolderpath +
 				'/assets): ' + (e as Error).message,
+		);
+	}
+
+	try {
+		Deno.symlinkSync(
+			'../../common/admin/assets',
+			siteFolderpath + '/admin_assets',
+		);
+	} catch (e) {
+		throw Error(
+			'Could not create admin assets symlink (' + siteFolderpath +
+				'/admin_assets): ' + (e as Error).message,
 		);
 	}
 }

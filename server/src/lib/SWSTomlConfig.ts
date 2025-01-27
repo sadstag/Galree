@@ -43,7 +43,12 @@ export function generateSWSTomlConfig(
 				'source': '/index.html',
 				'destination': '/',
 				'kind': 301,
+			}, {
+				'source': '/admin/index.html',
+				'destination': '/admin',
+				'kind': 301,
 			}],
+
 			//
 			// rewrites
 			// every route managed by the front app must be rewriten to avoid 404

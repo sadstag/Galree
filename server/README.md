@@ -2,6 +2,16 @@
 
 Install [Deno](https://deno.com/).
 
+then 
+```shell
+deno install
+```
+
+## Stack
+
+[Deno](https://deno.com/) embeds [Static Web Server 2](https://static-web-server.net/) to server public and admin fronts static files of all sites in a [Docker](https://www.docker.com/) image.
+
+
 ## configuration file
 
 File `galree.jsonc` in the root of the working copy
