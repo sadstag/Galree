@@ -1,12 +1,12 @@
-import { getDockerIlmageName } from './const.ts';
-import { error, info, success } from './lib/feedback.ts';
+import { getDockerImageName } from './const.ts';
+import { error, info, stepBegins, stepEnds, success } from './lib/feedback.ts';
 import { GalreeConfig } from './lib/galreeConfig.ts';
 import { readConfig } from './readConfig.ts';
 
 const CONTAINER_NAME = 'galree-dev';
 
 function deleteContainer() {
-	info('Deleting existing container ...');
+	stepBegins('Deleting existing container ...');
 	const command = new Deno.Command('docker', {
 		args: ['rm', '-f', CONTAINER_NAME],
 	});
@@ -15,12 +15,12 @@ function deleteContainer() {
 		info(new TextDecoder().decode(stdout));
 		error(new TextDecoder().decode(stderr));
 	} else {
-		success('Deleted existing container');
+		stepEnds('Deleted existing container');
 	}
 }
 
 function startContainer(config: GalreeConfig) {
-	info('Running docker image ...');
+	stepBegins('Running docker image ...');
 	const command = new Deno.Command('docker', {
 		args: [
 			'run',
@@ -29,23 +29,19 @@ function startContainer(config: GalreeConfig) {
 			'--publish',
 			'8080:80',
 			'--detach',
-			getDockerIlmageName(true),
+			getDockerImageName(true),
 		],
 	});
 	const { code, stdout, stderr } = command.outputSync();
 	if (code === 0) {
-		success('Docker image is running');
-		info('On all following URLs :');
+		let message = 'Docker image is running, on all the following URLs :\n';
 		for (const siteConfig of Object.values(config.sites)) {
-			info(
-				'http://' + siteConfig.subdomain + '.' +
-					config.defaultCodomain + ':8080',
-			);
-			info(
-				'http://' + siteConfig.subdomain + '.' +
-					config.defaultCodomain + ':8080/admin',
-			);
+			message += '\thttp://' + siteConfig.subdomain + '.' +
+				config.defaultCodomain + ':8080\n';
+			message += '\thttp://' + siteConfig.subdomain + '.' +
+				config.defaultCodomain + ':8080/admin\n';
 		}
+		stepEnds(message);
 	} else {
 		info(new TextDecoder().decode(stdout));
 		error(new TextDecoder().decode(stderr));

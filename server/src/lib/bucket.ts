@@ -17,7 +17,6 @@ export async function listBuckets(storage: Storage): Promise<Bucket[]> {
 export async function createBucket(
 	name: string,
 	storage: Storage,
-	corsOrigin: string[],
 ): Promise<Bucket> {
 	const { projectId } = storage;
 	try {
@@ -30,14 +29,6 @@ export async function createBucket(
 					enabled: true,
 				},
 			},
-			cors: [
-				{
-					maxAgeSeconds: 60 * 60 * 24,
-					method: ['GET'],
-					origin: corsOrigin,
-					responseHeader: ['Content-Type'],
-				},
-			],
 		});
 		return response[0];
 	} catch (e) {
@@ -74,4 +65,19 @@ export async function setBucketPermissions(
 			},
 		],
 	});
+}
+
+export async function setBucketCORS(
+	name: string,
+	storage: Storage,
+	corsOrigin: string[],
+) {
+	const bucket = storage.bucket(name);
+
+	await bucket.setCorsConfiguration([{
+		maxAgeSeconds: 60 * 60 * 24,
+		method: ['GET'],
+		origin: corsOrigin,
+		responseHeader: ['Content-Type'],
+	}]);
 }

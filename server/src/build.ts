@@ -1,7 +1,7 @@
 import {
 	ADMIN_FRONT_HTML_TEMPLATE_FILE,
 	DOCKER_IMAGE_FILESYSTEM_TEMP_DIR,
-	getDockerIlmageName,
+	getDockerImageName,
 	PUBLIC_FRONT_HTML_TEMPLATE_FILE,
 } from './const.ts';
 import {
@@ -10,10 +10,18 @@ import {
 	createSiteFolder,
 	prepareTempDirectory,
 } from './lib/dockerImageFilesystem.ts';
-import { die, error, info, success } from './lib/feedback.ts';
+import {
+	die,
+	error,
+	info,
+	stepBegins,
+	stepEnds,
+	success,
+} from './lib/feedback.ts';
 import { generateSWSTomlConfig } from './lib/SWSTomlConfig.ts';
 import { parseArgs } from '@std/cli/parse-args';
 import { readConfig } from './readConfig.ts';
+import { setEngine } from 'node:crypto';
 
 async function main() {
 	const { dev } = parseArgs(Deno.args, {
@@ -23,11 +31,11 @@ async function main() {
 		},
 	});
 
-	const dockerImageName = getDockerIlmageName(dev);
+	const dockerImageName = getDockerImageName(dev);
 
 	info('------------------------------------------------');
 	info('Building docker image "' + dockerImageName + '"');
-	info('------------------------------------------------');
+	info('------------------------------------------------\n');
 
 	//
 	// 1 - reading galree config
@@ -37,7 +45,8 @@ async function main() {
 	//
 	// 2 - creating server filesystem
 	//
-	info('Preparing temp directory');
+
+	stepBegins('Preparing temp directory');
 	try {
 		prepareTempDirectory(DOCKER_IMAGE_FILESYSTEM_TEMP_DIR);
 	} catch (e) {
@@ -46,12 +55,12 @@ async function main() {
 				(e as Error).message,
 		);
 	}
-	success('Prepared temp directory');
+	stepEnds('Prepared temp directory');
 
 	//
 	// 3 - creating index.html for each galree site
 	//
-	info('Creating index.html files ...');
+	stepBegins('Creating index.html files ...');
 	for (const [siteId, siteConfig] of Object.entries(config.sites)) {
 		try {
 			createSiteFolder(DOCKER_IMAGE_FILESYSTEM_TEMP_DIR, siteId);
@@ -74,12 +83,12 @@ async function main() {
 			);
 		}
 	}
-	success('Created index.html files');
+	stepEnds('Created index.html files');
 
 	//
 	// 4 - generating SWS config
 	//
-	info('Generating SWS config ...');
+	stepBegins('Generating SWS config ...');
 	const SWCConfig = generateSWSTomlConfig(config, dev);
 	try {
 		Deno.writeFileSync(
@@ -89,12 +98,12 @@ async function main() {
 	} catch (e) {
 		die('Could not write config.toml file: ' + (e as Error).message);
 	}
-	success('Generated SWS config');
+	stepEnds('Generated SWS config');
 
 	//
 	// 5 - Building docker image
 	//
-	info('Generating docker image ...');
+	stepBegins('Generating docker image ...');
 	const command = new Deno.Command('docker', {
 		args: [
 			'build',
@@ -105,7 +114,7 @@ async function main() {
 	});
 	const { code, stdout, stderr } = command.outputSync();
 	if (code === 0) {
-		success('Docker image is built');
+		stepEnds('Docker image is built');
 	} else {
 		info(new TextDecoder().decode(stdout));
 		error(new TextDecoder().decode(stderr));
