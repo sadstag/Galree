@@ -1,4 +1,4 @@
-import { info, success } from './lib/feedback.ts';
+import { die, info, success } from './lib/feedback.ts';
 import { readConfig } from './readConfig.ts';
 
 import { Storage } from 'npm:@google-cloud/storage';
@@ -8,7 +8,6 @@ import {
 	listBuckets,
 	setBucketPermissions,
 } from './lib/bucket.ts';
-import { die } from './lib/die.ts';
 
 async function main() {
 	info('----------------------------------------------------');

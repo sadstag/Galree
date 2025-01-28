@@ -4,14 +4,13 @@ import {
 	getDockerIlmageName,
 	PUBLIC_FRONT_HTML_TEMPLATE_FILE,
 } from './const.ts';
-import { die } from './lib/die.ts';
 import {
 	createAdminSiteIndexFile,
 	createPublicSiteIndexFile,
 	createSiteFolder,
 	prepareTempDirectory,
 } from './lib/dockerImageFilesystem.ts';
-import { error, info, success } from './lib/feedback.ts';
+import { die, error, info, success } from './lib/feedback.ts';
 import { generateSWSTomlConfig } from './lib/SWSTomlConfig.ts';
 import { parseArgs } from '@std/cli/parse-args';
 import { readConfig } from './readConfig.ts';

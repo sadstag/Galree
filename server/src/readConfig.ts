@@ -1,6 +1,5 @@
 import { CONFIG_FILE } from './const.ts';
-import { die } from './lib/die.ts';
-import { info, success } from './lib/feedback.ts';
+import { die, info, success } from './lib/feedback.ts';
 import { GalreeConfig, readGalreeConfigFromFile } from './lib/galreeConfig.ts';
 
 export async function readConfig(): Promise<GalreeConfig> {
