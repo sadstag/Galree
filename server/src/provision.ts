@@ -18,7 +18,7 @@ async function main() {
 	//
 	// 1 - reading galree config
 	//
-	const { GCPProjectId: projectId, sites: siteConfigs, defaultCodomain } =
+	const { GCPProjectId: projectId, sites: siteConfigs, domain } =
 		await readConfig();
 	const bucketNameBuilder = bucketNameBuilderFactory(projectId);
 
@@ -109,7 +109,7 @@ async function main() {
 		)
 	) {
 		const bucketName = bucketNameBuilder(siteId);
-		const corsOrigin = 'http://' + defaultCodomain + '.' + subdomain;
+		const corsOrigin = 'http://' + domain + '.' + subdomain;
 
 		stepBegins('Ensuring CORS for bucket: ' + bucketName);
 		try {

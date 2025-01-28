@@ -21,7 +21,7 @@ File `galree.jsonc` in the root of the working copy
 ```jsonc
 {
 	"GCPProjectId": "...",
-	"defaultCodomain": "foo.art",
+	"domain": "foo.art",
 	"sites": {
 		"site id 1": {
 			"title": "...", // site title, as found in HTML head

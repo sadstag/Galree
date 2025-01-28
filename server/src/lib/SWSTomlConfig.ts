@@ -65,7 +65,7 @@ export function generateSWSTomlConfig(
 	};
 
 	for (const [siteId, siteConfig] of Object.entries(galreeConfig.sites)) {
-		let host = siteConfig.subdomain + '.' + galreeConfig.defaultCodomain;
+		let host = siteConfig.subdomain + '.' + galreeConfig.domain;
 		if (dev) {
 			host += ':8080';
 		}

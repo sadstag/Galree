@@ -2,7 +2,7 @@ import { parse } from '@std/jsonc';
 
 export type GalreeConfig = {
 	GCPProjectId: string;
-	defaultCodomain: string;
+	domain: string;
 	sites: {
 		[key: string]: SiteConfig;
 	};
@@ -70,7 +70,7 @@ function validateGalreeConfig(
 	}
 
 	ensureNonEmptyStringField(config, 'GCPProjectId');
-	ensureNonEmptyStringField(config, 'defaultCodomain');
+	ensureNonEmptyStringField(config, 'domain');
 
 	if (
 		!('sites' in config && isRecord(config['sites']) &&

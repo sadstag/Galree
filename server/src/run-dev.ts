@@ -36,10 +36,10 @@ function startContainer(config: GalreeConfig) {
 	if (code === 0) {
 		let message = 'Docker image is running, on all the following URLs :\n';
 		for (const siteConfig of Object.values(config.sites)) {
-			message += '\thttp://' + siteConfig.subdomain + '.' +
-				config.defaultCodomain + ':8080\n';
-			message += '\thttp://' + siteConfig.subdomain + '.' +
-				config.defaultCodomain + ':8080/admin\n';
+			const address = 'http://' + siteConfig.subdomain + '.' +
+				config.domain + ':8080';
+			message += '\t' + address + '\n';
+			message += '\t' + address + '/admin\n';
 		}
 		stepEnds(message);
 	} else {
