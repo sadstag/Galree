@@ -6,6 +6,8 @@ export const ADMIN_FRONT_HTML_TEMPLATE_FILE = '../front/admin/index.html';
 
 export const DOCKER_IMAGE_BASENAME = 'galree';
 
+export const ARTWORKS_FOLDER_NAME = 'artworks';
+
 export function getDockerImageName(dev: boolean) {
 	return DOCKER_IMAGE_BASENAME + (dev ? '-dev' : '');
 }

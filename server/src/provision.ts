@@ -3,12 +3,14 @@ import { readConfig } from './readConfig.ts';
 
 import { Storage } from 'npm:@google-cloud/storage';
 import {
-	bucketNameBuilderFactory,
 	createBucket,
 	listBuckets,
 	setBucketCORS,
 	setBucketPermissions,
-} from './lib/bucket.ts';
+	SiteAdminMapping,
+} from './lib/GCP/bucket.ts';
+import { StorageControlClient } from 'npm:@google-cloud/storage-control';
+import { ARTWORKS_FOLDER_NAME } from './const.ts';
 
 async function main() {
 	info('----------------------------------------------------');
@@ -18,137 +20,99 @@ async function main() {
 	//
 	// 1 - reading galree config
 	//
-	const { GCPProjectId: projectId, sites: siteConfigs, domain } =
-		await readConfig();
-	const bucketNameBuilder = bucketNameBuilderFactory(projectId);
+	const {
+		GCPProjectId: projectId,
+		sites: siteConfigs,
+		domain,
+		public_bucket,
+	} = await readConfig();
 
 	const storage = new Storage({ projectId });
+	const controlClient = new StorageControlClient();
 
 	//
-	// 2 - listing existing buckets
+	// 2 - Ensuring public bucket exists
 	//
-	stepBegins('Listing existing buckets ...');
-	let existingBuckets = await listBuckets(storage);
-	for (const { name } of existingBuckets) {
-		info(`\t${name}`);
-	}
-	stepEnds('Listed existed buckets.');
+	stepBegins('Ensuring public bucket exists');
+	const buckets = await listBuckets(storage);
 
-	//
-	// 3 - Listing all galree site buckets
-	//
-	stepBegins('Listing needed galree site buckets ...');
-	const siteBuckets = Object.values(siteConfigs).map(({ siteId }) =>
-		bucketNameBuilder(siteId)
-	);
-	for (const name of siteBuckets) {
-		info(`\t${name}`);
-	}
-	stepEnds('Listed needed galree site buckets.');
-
-	//
-	// 4 - Creating missing buckets
-	//
-	let nbCreatedBuckets = 0;
-	for (
-		const { siteId, subdomain } of Object.values(
-			siteConfigs,
-		)
-	) {
-		const bucketName = bucketNameBuilder(siteId);
-
-		if (existingBuckets.some(({ name }) => name === bucketName)) {
-			info(
-				'Bucket "' + bucketName +
-					'" already exists, skipping creation',
-			);
-			continue;
-		}
-
-		stepBegins(`Creating missing bucket ${name} ...`);
-
+	if (buckets.some((b) => b.name === public_bucket)) {
+		stepEnds(
+			'Bucket "' + public_bucket +
+				'" already exists, skipping creation',
+		);
+	} else {
 		try {
-			existingBuckets.push(
-				await createBucket(
-					bucketName,
-					storage,
-				),
-			);
-			nbCreatedBuckets++;
-			stepEnds(
-				`Created bucket: ${bucketName}`,
-			);
+			await createBucket(
+				public_bucket,
+				storage,
+			),
+				stepEnds(
+					`Created bucket "${public_bucket}"`,
+				);
 		} catch (e) {
 			die(
-				"Could not create bucket '" + bucketName + "': " +
+				"Could not create bucket '" + public_bucket + "': " +
 					(e as Error).message,
 			);
 		}
 	}
 
-	if (nbCreatedBuckets === 0) {
-		info('No new bucket created');
-	} else {
-		info('Created ' + nbCreatedBuckets + ' new bucket(s)');
-		// re-fetching bucket list after creations
-		existingBuckets = await listBuckets(storage);
-		info('now buckets are :');
-		for (const { name } of existingBuckets) {
-			info(`\t${name}`);
-		}
-	}
-
-	console.log('');
+	info('');
 
 	//
-	// 5 - Settings CORS for site buckets
+	// 5 - Settings CORS for pubolic bucket
 	//
 	for (
-		const { siteId, subdomain } of Object.values(
+		const { subdomain } of Object.values(
 			siteConfigs,
 		)
 	) {
-		const bucketName = bucketNameBuilder(siteId);
 		const corsOrigin = 'http://' + domain + '.' + subdomain;
 
-		stepBegins('Ensuring CORS for bucket: ' + bucketName);
+		stepBegins('Ensuring CORS for bucket: ' + public_bucket);
 		try {
-			await setBucketCORS(bucketName, storage, [corsOrigin]);
+			await setBucketCORS(public_bucket, storage, [corsOrigin]);
 			stepEnds(
-				`Successfully set CORS for bucket: ${bucketName}`,
+				`Successfully set CORS for bucket "${public_bucket}"`,
 			);
 		} catch (e) {
 			die(
 				"Could not set CORS for bucket '" +
-					bucketName + "': " +
+					public_bucket + "': " +
 					(e as Error).message,
 			);
 		}
 	}
 
 	//
-	// 6- Setting permissions for site buckets
+	// 6- Setting permissions for public bucket
 	//
-	for (
-		const { siteId, siteAdminGoogleAccount } of Object.values(
-			siteConfigs,
-		)
-	) {
-		const bucketName = bucketNameBuilder(siteId);
+	const siteAdminGoogleAccounts: SiteAdminMapping = Object.values(siteConfigs)
+		.map(
+			(
+				{ siteId, siteAdminGoogleAccount },
+			) => [siteId, siteAdminGoogleAccount],
+		);
 
-		stepBegins('Ensuring permissions for bucket: ' + bucketName);
-		try {
-			setBucketPermissions(bucketName, storage, siteAdminGoogleAccount);
-			stepEnds(
-				`Successfully set permissions for bucket: ${bucketName}`,
-			);
-		} catch (e) {
-			die(
-				"Could not set permissions for bucket '" +
-					bucketName + "': " +
-					(e as Error).message,
-			);
-		}
+	stepBegins('Ensuring permissions for bucket: "' + public_bucket + '"');
+	try {
+		await setBucketPermissions(
+			public_bucket,
+			storage,
+			controlClient,
+			siteAdminGoogleAccounts,
+			ARTWORKS_FOLDER_NAME,
+		);
+		stepEnds(
+			`Successfully set permissions for bucket: "${public_bucket}"`,
+		);
+	} catch (e) {
+		die(
+			"Could not set permissions for bucket '" +
+				public_bucket + "': " +
+				(e as Error).message,
+		);
 	}
 
 	//

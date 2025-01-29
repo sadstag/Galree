@@ -22,6 +22,7 @@ File `galree.jsonc` in the root of the working copy
 {
 	"GCPProjectId": "...",
 	"domain": "foo.art",
+	"public_bucket": "...", // where galleries artworks will go, must be unique worldwide
 	"sites": {
 		"site id 1": {
 			"title": "...", // site title, as found in HTML head
