@@ -1,39 +1,20 @@
-# Galree server configuration
+# Galree server
 
-Install [Deno](https://deno.com/).
+Ensure you have a valid [setup](../doc/setup.md).
 
-then 
+Install
+- [Deno](https://deno.com/).
+- [gcloud CLI](https://cloud.google.com/sdk/docs/install).
+
 ```shell
+cd server
 deno install
 ```
-
-Install the [gcloud CLI](https://cloud.google.com/sdk/docs/install).
 
 ## Stack
 
 [Deno](https://deno.com/) embeds [Static Web Server 2](https://static-web-server.net/) to server public and admin fronts static files of all sites in a [Docker](https://www.docker.com/) image.
 
-
-## configuration file
-
-File `galree.jsonc` in the root of the working copy
-
-```jsonc
-{
-	"GCPProjectId": "...",
-	"domain": "foo.art",
-	"public_bucket": "...", // where galleries artworks will go, must be unique worldwide
-	"sites": {
-		"site id 1": {
-			"title": "...", // site title, as found in HTML head
-			"siteAdminGoogleAccount": "google email",
-			"googleSheetId": "Id of the Galree site data google spreadsheet",
-			"subdomain": "site1", // => site1.foo.art
-			"online" : true
-		}
-	}
-}
-```
 
 ## tasks
 
@@ -42,11 +23,14 @@ File `galree.jsonc` in the root of the working copy
 Some tasks need you to be authenticated on GCP.
 
 ```shell
-gcloud auth application-default login
+gclound init # and select the right identity/project
+gcloud auth application-default login # will get acess token used by the tasks
 ```
 
 ### provisionning resources on GCP
-build the dev docker image:
+Creates the main bucket:
+- publicly readable
+- one folder per site, writable by site admin
 ```shell
 deno run provision
 ```

@@ -10,18 +10,10 @@ import {
 	createSiteFolder,
 	prepareTempDirectory,
 } from './lib/dockerImageFilesystem.ts';
-import {
-	die,
-	error,
-	info,
-	stepBegins,
-	stepEnds,
-	success,
-} from './lib/feedback.ts';
+import { die, error, info, stepBegins, stepEnds } from './lib/feedback.ts';
 import { generateSWSTomlConfig } from './lib/SWSTomlConfig.ts';
 import { parseArgs } from '@std/cli/parse-args';
 import { readConfig } from './readConfig.ts';
-import { setEngine } from 'node:crypto';
 
 async function main() {
 	const { dev } = parseArgs(Deno.args, {

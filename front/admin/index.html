@@ -1,18 +1,12 @@
 <html>
-
 <head>
-    <title>Administration - <%= it.title %></title>
-    <script>
-        window.galree_config = {
-            siteId: "<%= it.siteId %>",
-            siteAdminGoogleAccount: "<%= it.siteAdminGoogleAccount %>",
-            googleSheetId: "<%= it.googleSheetId %>"
-        }
-    </script>
+    <title>Administration - Galree site - <%= it.title %></title>
+    <script><%~ it.config %></script>
 </head>
-
 <body>
-    <h1>Galree admin front for <%= it.siteId %></h1>
+    <h1>Galree admin</h1>
     <img src="/admin_assets/test_admin_asset.png" />
+    <div id="root"></div>
+    <script type="module" src="/src/index.ts"></script>
 </body>
 </html>

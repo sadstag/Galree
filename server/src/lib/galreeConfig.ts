@@ -15,7 +15,6 @@ export type SiteConfig = {
 	siteAdminGoogleAccount: string;
 	googleSheetId: string;
 	subdomain: string;
-	online: boolean;
 };
 
 type ValidationResult<ConfigType> = {
@@ -135,15 +134,6 @@ export function validateSiteConfig(
 	ensureNonEmptyStringField(siteConfig, 'siteAdminGoogleAccount');
 	ensureNonEmptyStringField(siteConfig, 'googleSheetId');
 	ensureNonEmptyStringField(siteConfig, 'subdomain');
-
-	if (
-		!('online' in siteConfig && typeof siteConfig['online'] === 'boolean')
-	) {
-		return {
-			isValid: false,
-			error: 'missing field "online" or not boolean-valued',
-		};
-	}
 
 	return {
 		isValid: true,

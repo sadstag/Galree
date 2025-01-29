@@ -1,0 +1,28 @@
+# Setup your gallery project
+
+## on GCP
+
+Create a dedicated project via the
+[google cloud console](https://console.cloud.google.com/), you'll give it in
+configuration as _GCPProjectId_.
+
+## Locally
+
+Create a file `galree.jsonc` in the root of the working copy, with [these
+instructions]
+
+```jsonc
+{
+	"GCPProjectId": "...",
+	"domain": "foo.art", // a domain name you control
+	"public_bucket": "...", // where galleries artworks will go, must be unique worldwide, the server task scripts will create it  and configure it for you
+	"sites": {
+		"site id 1": { // site identifier, serves everywhere, should be fixed from the start
+			"title": "...", // site title, as found in HTML head
+			"siteAdminGoogleAccount": "google email", // the google identity of the site administrator
+			"googleSheetId": "..", // Id of the Galree site data google spreadsheet
+			"subdomain": "site1" // => once galree server is deployed, the site will be available at site1.foo.art
+		}
+	}
+}
+```

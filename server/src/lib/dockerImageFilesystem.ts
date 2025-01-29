@@ -136,6 +136,8 @@ export function createPublicSiteIndexFile(
 	const html = templateRenderer.renderString(HTMLTemplate, {
 		siteId,
 		title,
+		config: 'window.galree = ' +
+			JSON.stringify({ siteId }),
 	});
 
 	const destFilepath = dockerFSFolderPath + '/galree/sites/' + siteId +
@@ -170,8 +172,8 @@ export function createAdminSiteIndexFile(
 	const html = templateRenderer.renderString(HTMLTemplate, {
 		siteId,
 		title,
-		siteAdminGoogleAccount,
-		googleSheetId,
+		config: 'window.galree = ' +
+			JSON.stringify({ siteId, siteAdminGoogleAccount, googleSheetId }),
 	});
 
 	const destFilepath = dockerFSFolderPath + '/galree/sites/' + siteId +
