@@ -14,7 +14,7 @@ export function generateSWSTomlConfig(
 		'general': {
 			'host': '::',
 			'port': 80,
-			'root': './galree',
+			'root': '.',
 			'log-level': dev ? 'debug' : 'error',
 			'cache-control-headers': true,
 			'compression': true,
@@ -71,7 +71,7 @@ export function generateSWSTomlConfig(
 		}
 		SWCConfig.advanced['virtual-hosts'].push({
 			host,
-			root: `/galree/sites/${siteId}`,
+			root: `/sites/${siteId}`,
 		});
 	}
 

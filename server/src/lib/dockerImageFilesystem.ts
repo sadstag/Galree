@@ -1,3 +1,7 @@
+import {
+	ADMIN_FRONT_ASSETS_FOLDER,
+	PUBLIC_FRONT_ASSETS_FOLDER,
+} from '../const.ts';
 import { SiteConfig } from './galreeConfig.ts';
 import { Eta } from 'jsr:@eta-dev/eta';
 
@@ -22,53 +26,63 @@ export function prepareTempDirectory(folderPath: string) {
 	}
 
 	try {
-		Deno.mkdirSync(folderPath + '/galree/sites', { recursive: true });
+		Deno.mkdirSync(folderPath + '/sites', { recursive: true });
 	} catch (e) {
 		throw Error(
-			'Could not create temp directory (' + folderPath + '/galree/sites' +
+			'Could not create temp directory (' + folderPath + '/sites' +
 				'): ' + (e as Error).message,
+		);
+	}
+	try {
+		recursiveFolderCopy(
+			PUBLIC_FRONT_ASSETS_FOLDER,
+			folderPath + '/assets',
+		);
+	} catch (e) {
+		throw Error(
+			'Could not recursively copy folder ' + PUBLIC_FRONT_ASSETS_FOLDER +
+				' to ' + folderPath + '/assets' +
+				': ' + (e as Error).message,
 		);
 	}
 
 	try {
-		Deno.mkdirSync(folderPath + '/galree/common/public/assets', {
-			recursive: true,
-		});
-	} catch (e) {
-		throw Error(
-			'Could not create public assets directory (' + folderPath +
-				'/galree/common/public/assets' +
-				'): ' + (e as Error).message,
+		recursiveFolderCopy(
+			ADMIN_FRONT_ASSETS_FOLDER,
+			folderPath + '/admin_assets',
 		);
-	}
-
-	try {
-		Deno.mkdirSync(folderPath + '/galree/common/admin/assets', {
-			recursive: true,
-		});
 	} catch (e) {
 		throw Error(
-			'Could not create admin assets directory (' + folderPath +
-				'/galree/common/admin/assets' +
-				'): ' + (e as Error).message,
+			'Could not recursively copy folder ' + PUBLIC_FRONT_ASSETS_FOLDER +
+				' to ' + folderPath + '/admin_assets' +
+				': ' + (e as Error).message,
 		);
 	}
 
 	Deno.copyFileSync('const_files/404.html', folderPath + '/404.html');
 	Deno.copyFileSync('const_files/50x.html', folderPath + '/50x.html');
+}
 
-	Deno.copyFileSync(
-		'const_files/test_public_asset.png',
-		folderPath + '/galree/common/public/assets/test_public_asset.png',
-	);
-	Deno.copyFileSync(
-		'const_files/test_admin_asset.png',
-		folderPath + '/galree/common/admin/assets/test_admin_asset.png',
-	);
+function recursiveFolderCopy(sourceFolder: string, destinationFolder: string) {
+	Deno.mkdirSync(destinationFolder);
+	for (const entry of Deno.readDirSync(sourceFolder)) {
+		if (entry.isDirectory) {
+			Deno.mkdirSync(destinationFolder + '/' + entry.name);
+			recursiveFolderCopy(
+				sourceFolder + '/' + entry.name,
+				destinationFolder + '/' + entry.name,
+			);
+		} else {
+			Deno.copyFileSync(
+				sourceFolder + '/' + entry.name,
+				destinationFolder + '/' + entry.name,
+			);
+		}
+	}
 }
 
 export function createSiteFolder(dockerFSFolderPath: string, siteId: string) {
-	const siteFolderpath = dockerFSFolderPath + '/galree/sites/' + siteId;
+	const siteFolderpath = dockerFSFolderPath + '/sites/' + siteId;
 	try {
 		Deno.mkdirSync(siteFolderpath);
 	} catch (e) {
@@ -87,7 +101,7 @@ export function createSiteFolder(dockerFSFolderPath: string, siteId: string) {
 	}
 	try {
 		Deno.symlinkSync(
-			'../../common/public/assets',
+			'../../assets',
 			siteFolderpath + '/assets',
 		);
 	} catch (e) {
@@ -99,7 +113,7 @@ export function createSiteFolder(dockerFSFolderPath: string, siteId: string) {
 
 	try {
 		Deno.symlinkSync(
-			'../../common/admin/assets',
+			'../../admin_assets',
 			siteFolderpath + '/admin_assets',
 		);
 	} catch (e) {
@@ -140,7 +154,7 @@ export function createPublicSiteIndexFile(
 			JSON.stringify({ siteId }),
 	});
 
-	const destFilepath = dockerFSFolderPath + '/galree/sites/' + siteId +
+	const destFilepath = dockerFSFolderPath + '/sites/' + siteId +
 		'/index.html';
 
 	Deno.writeFileSync(destFilepath, encoder.encode(html));
@@ -176,7 +190,7 @@ export function createAdminSiteIndexFile(
 			JSON.stringify({ siteId, siteAdminGoogleAccount, googleSheetId }),
 	});
 
-	const destFilepath = dockerFSFolderPath + '/galree/sites/' + siteId +
+	const destFilepath = dockerFSFolderPath + '/sites/' + siteId +
 		'/admin/index.html';
 
 	Deno.writeFileSync(destFilepath, encoder.encode(html));

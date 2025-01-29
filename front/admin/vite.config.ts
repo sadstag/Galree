@@ -25,7 +25,6 @@ if (process.env.MODE === "serve") {
 	plugins.push(EtaPlugin({ siteId }));
 }
 
-// biome-ignore lint/style/noDefaultExport: <explanation>
 export default defineConfig({
 	resolve: {
 		// alias: {
@@ -40,14 +39,15 @@ export default defineConfig({
 	// 	__APP_VERSION__: JSON.stringify("v1.0.0"),
 	// 	"import.meta.env.SITE": JSON.stringify(process.env.SITE),
 	// },
-	publicDir: `./public`,
+	publicDir: "./public",
 	server: {
 		strictPort: true,
 		open: true,
 	},
 	build: {
-		assetsDir: `admin_assets`,
-		outDir: `./dist`,
+		assetsDir: "admin_assets",
+		assetsInlineLimit: 0, // for tests, to be eventually reverted
+		outDir: "./dist",
 		emptyOutDir: true,
 		rollupOptions: {
 			external: ["solid-js", "@solidjs/router", "solid-markdown"],
