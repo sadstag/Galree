@@ -35,6 +35,20 @@ pnpm start
 No need for site id here, it's the same code for all sites. The server will be
 built with HTML files correctly modified for each site.
 
+## previewing
+
+```shell
+SITE=foobar pnpm preview
+```
+
+building and previewing.
+
+Have the _SITE_ env var set to the site id (defined in the galree configuration
+file) of the site you want to start.
+
+build is done for the preview specifically, as it inject site config by
+evaluating ETA template tags as the server build scripts would do.
+
 ## questions to explore
 
 - resize of images : can be done by client ?

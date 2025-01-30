@@ -1,9 +1,11 @@
+import { randomInt } from 'node:crypto';
 import {
 	ADMIN_FRONT_ASSETS_FOLDER,
 	PUBLIC_FRONT_ASSETS_FOLDER,
 } from '../const.ts';
 import { SiteConfig } from './galreeConfig.ts';
 import { Eta } from 'jsr:@eta-dev/eta';
+const { createHash } = await import('node:crypto');
 
 export function prepareTempDirectory(folderPath: string) {
 	let folderExists = false;
@@ -183,11 +185,20 @@ export function createAdminSiteIndexFile(
 		);
 	}
 
+	const hashSalt = '' + randomInt(100000, 1000000);
+	const hashed_siteAdminGoogleAccount = createHash('sha256', {})
+		.update(siteAdminGoogleAccount + hashSalt).digest('hex');
+
 	const html = templateRenderer.renderString(HTMLTemplate, {
 		siteId,
 		title,
 		config: 'window.galree = ' +
-			JSON.stringify({ siteId, siteAdminGoogleAccount, googleSheetId }),
+			JSON.stringify({
+				siteId,
+				hashSalt,
+				hashed_siteAdminGoogleAccount,
+				googleSheetId,
+			}),
 	});
 
 	const destFilepath = dockerFSFolderPath + '/sites/' + siteId +
