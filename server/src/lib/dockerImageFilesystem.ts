@@ -152,8 +152,8 @@ export function createPublicSiteIndexFile(
 	const html = templateRenderer.renderString(HTMLTemplate, {
 		siteId,
 		title,
-		config: 'window.galree = ' +
-			JSON.stringify({ siteId }),
+		config: 'window.galree =  Object.freeze(' +
+			JSON.stringify({ siteId }) + ')',
 	});
 
 	const destFilepath = dockerFSFolderPath + '/sites/' + siteId +
@@ -186,19 +186,19 @@ export function createAdminSiteIndexFile(
 	}
 
 	const hashSalt = '' + randomInt(100000, 1000000);
-	const hashed_siteAdminGoogleAccount = createHash('sha256', {})
-		.update(siteAdminGoogleAccount + hashSalt).digest('hex');
+	const hashed_siteAdminGoogleAccount = createHash('sha256')
+		.update(siteAdminGoogleAccount + hashSalt).digest('base64');
 
 	const html = templateRenderer.renderString(HTMLTemplate, {
 		siteId,
 		title,
-		config: 'window.galree = ' +
+		config: 'window.galree = Object.freeze(' +
 			JSON.stringify({
 				siteId,
 				hashSalt,
 				hashed_siteAdminGoogleAccount,
 				googleSheetId,
-			}),
+			}) + ')',
 	});
 
 	const destFilepath = dockerFSFolderPath + '/sites/' + siteId +

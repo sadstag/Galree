@@ -6,6 +6,9 @@ Create a dedicated project via the
 [google cloud console](https://console.cloud.google.com/), you'll give it in
 configuration as _GCPProjectId_.
 
+[setup google identity](setupGoogleIdentity) to allow admin front to log in site
+admin users.
+
 ## Locally
 
 Create a file `galree.jsonc` in the root of the working copy, with [these

@@ -4,7 +4,7 @@ import { defineConfig } from "vite";
 import solid from "vite-plugin-solid";
 import { EtaPlugin } from "./eta.plugin";
 
-export default defineConfig(({ command, isPreview }) => {
+export default defineConfig(({ command }) => {
 	const isBuildingForPreview = command === "build" &&
 		process.argv.includes("--for-preview");
 

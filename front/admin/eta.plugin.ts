@@ -34,13 +34,18 @@ export function EtaPlugin({ siteId }: EtaPluginOptions): Plugin {
             const siteConfig = config.sites[siteId];
 
             const hashSalt = randomUUID();
-            const hashed_siteAdminGoogleAccount = createHash("sha256", {})
-                .update(config.siteAdminGoogleAccount + hashSalt).digest("hex");
+            const hashed_siteAdminGoogleAccount = createHash("sha256")
+                .update(
+                    siteConfig.siteAdminGoogleAccount +
+                        hashSalt,
+                ).digest(
+                    "hex",
+                );
 
             return templateRenderer.renderString(html, {
                 siteId,
                 title: siteConfig.title,
-                config: `;\nwindow.galree = ${
+                config: `;\nwindow.galree = Object.freeze(${
                     JSON.stringify(
                         {
                             title: config.title,
@@ -52,7 +57,7 @@ export function EtaPlugin({ siteId }: EtaPluginOptions): Plugin {
                         null,
                         "\t",
                     )
-                }`,
+                })`,
             });
         },
     };
