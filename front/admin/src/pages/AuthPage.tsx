@@ -1,14 +1,14 @@
 import { createSignal, onMount, Show } from "solid-js";
 import { jwtDecode } from "jwt-decode";
-import logo from "./logo.svg";
-import "./AuthPage.css";
+import styles from "./AuthPage.module.css";
+
 import {
 	isExpectedGoogleIdentity,
 	login,
 	logout,
 	type SignedInGoogleIndentityInfo,
 } from "./auth";
-import { useNavigate } from "@solidjs/router";
+import { useNavigate, usePreloadRoute } from "@solidjs/router";
 
 const googleSignInScript = document.createElement("script");
 googleSignInScript.async = false;
@@ -23,15 +23,22 @@ type AuthState = {
 
 export const AuthPage = () => {
 	const navigate = useNavigate();
+	const preload = usePreloadRoute();
 
 	const [authState, setAuthState] = createSignal<AuthState>({
 		type: "unauthenticated",
 	});
 
+	function handleMouseOverSigninButton() {
+		preload(
+			"/admin/in",
+			// { preloadData: true } ?
+		);
+	}
+
 	function handleCredentialResponse(
 		response: google.accounts.id.CredentialResponse,
 	) {
-		console.log({ response });
 		const identityInfo = jwtDecode(
 			response.credential,
 		) as SignedInGoogleIndentityInfo;
@@ -39,7 +46,7 @@ export const AuthPage = () => {
 		isExpectedGoogleIdentity(identityInfo).then((isExpected) => {
 			if (isExpected) {
 				login(identityInfo);
-				navigate("/datasource");
+				navigate("/admin/in");
 			} else {
 				setAuthState({
 					type: "authenticated_unexpected_identity",
@@ -63,12 +70,13 @@ export const AuthPage = () => {
 				});
 				window.google.accounts.id.renderButton(
 					// biome-ignore lint/style/noNonNullAssertion: the button will be there in onMount()
-					document.getElementById("signInButton")!,
+					document.getElementById("sign_in")!,
 					{
 						type: "standard",
 						locale: "en-US",
 						theme: "outline",
-						size: "large",
+						size: "medium",
+						text: "signin",
 					},
 				);
 				google.accounts.id.storeCredential;
@@ -92,10 +100,15 @@ export const AuthPage = () => {
 	});
 
 	return (
-		<>
-			<img id="logo" src={logo} alt="logo" />
+		<div class={styles.auth_page}>
 			<Show when={authState().type === "unauthenticated"}>
-				<div id="signInButton" />
+				<h1>Welcome where you know you are</h1>
+				<div
+					id="sign_in"
+					class={styles.sign_in_button}
+					onMouseOver={handleMouseOverSigninButton}
+					onFocus={handleMouseOverSigninButton}
+				/>
 			</Show>
 			<Show when={authState().type === "authenticated_unexpected_identity"}>
 				<>
@@ -104,11 +117,18 @@ export const AuthPage = () => {
 						You were not expected. Maybe you have several google account and did
 						not select the right one to authenticate ?
 					</p>
-					<button type="button" id="signOutButton" onClick={logout}>
+					<button
+						type="button"
+						id="signOutButton"
+						onClick={() => {
+							logout();
+							window.location.reload();
+						}}
+					>
 						Sign out
 					</button>
 				</>
 			</Show>
-		</>
+		</div>
 	);
 };

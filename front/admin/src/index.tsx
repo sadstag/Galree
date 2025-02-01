@@ -2,19 +2,20 @@ import { render } from "solid-js/web";
 import { Route, Router } from "@solidjs/router";
 import { lazy } from "solid-js";
 import { AuthPage } from "./pages/AuthPage";
+import "./main.css";
+import NotFound from "./pages/NotFound";
 
 const rootElement = document.getElementById("root");
 if (rootElement) {
-	const DatasourcePage = lazy(() => import("./pages/DatasourcePage"));
-	const ImagesPage = lazy(() => import("./pages/ImagesPage"));
-	const NotFound = lazy(() => import("./pages/NotFound"));
+	const AppPage = lazy(() => import("./pages/AppPage"));
 
 	render(
 		() => (
 			<Router>
-				<Route path="/" component={AuthPage} />
-				<Route path="/datasource" component={DatasourcePage} />
-				<Route path="/images" component={ImagesPage} />
+				<Route path="/admin">
+					<Route path="/" component={AuthPage} />
+					<Route path="/in" component={AppPage} />
+				</Route>
 				<Route path="*" component={NotFound} />
 			</Router>
 		),

@@ -1,0 +1,11 @@
+.auth_page {
+	h1 {
+		text-align: center;
+		padding: 50px 0;
+	}
+
+	.sign_in_button {
+		width: fit-content;
+		margin: auto;
+	}
+}

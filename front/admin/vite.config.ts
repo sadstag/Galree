@@ -44,7 +44,7 @@ export default defineConfig(({ command }) => {
 		publicDir: "./public",
 		server: {
 			strictPort: true,
-			open: true,
+			open: "/admin",
 		},
 		build: {
 			assetsDir: "admin_assets",
