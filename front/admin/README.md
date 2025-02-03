@@ -56,3 +56,4 @@ evaluating ETA template tags as the server build scripts would do.
   - https://silvia-odwyer.github.io/photon/
   - https://github.com/juunini/webp-converter-browser
   - https://github.com/kleisauke/wasm-vips !
+  - https://github.com/GoogleChromeLabs/squoosh

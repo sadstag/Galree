@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="103" height="44" viewBox="0 0 103 44" xmlns="http://www.w3.org/2000/svg">
+    <path id="Shape" fill="#00a2ff" fill-rule="evenodd" stroke="none" visibility="hidden" d="M 0 44 L 103 44 L 103 0 L 0 0 Z"/>
+    <text id="G" xml:space="preserve" x="-2" y="40" font-family="Heiti SC" font-size="48" font-weight="700" fill="#000000">G</text>
+    <text id="L" xml:space="preserve" x="45.684" y="39" font-family="Heiti SC" font-size="36" font-weight="700" fill="#000000">L</text>
+    <text id="E" xml:space="preserve" x="60.352" y="39" font-family="Heiti SC" font-size="36" font-weight="700" fill="#000000">E</text>
+    <text id="text1" xml:space="preserve" x="78.352" y="39" font-family="Heiti SC" font-size="36" font-weight="700" fill="#000000">E</text>
+    <text id="R" xml:space="preserve" x="51.037" y="28" font-family="Heiti SC" font-size="18" font-weight="700" fill="#646464">R</text>
+    <text id="A" xml:space="preserve" x="33" y="22" font-family="Heiti SC" font-size="18" font-weight="700" fill="#646464">A</text>
+</svg>

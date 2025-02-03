@@ -79,7 +79,6 @@ export const AuthPage = () => {
 						text: "signin",
 					},
 				);
-				google.accounts.id.storeCredential;
 				google.accounts.id.prompt();
 
 				// TODO redirect to another page

@@ -1,0 +1,36 @@
+.header {
+	height: 60px;
+	display: flex;
+	overflow: hidden;
+
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+
+	background-color: hsl(60deg, 100%, 90%);
+	border-bottom: thin solid black;
+
+	> .logo {
+		flex-grow: 0;
+		height: 40px;
+		width: 100px;
+		margin: 10px;
+	}
+
+	.user {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		margin: 10px;
+		> *:not(:first-child) {
+			margin-left: 20px;
+		}
+
+		> img {
+			flex-grow: 0;
+			height: 80px;
+			width: 80px;
+			border-radius: 40px;
+		}
+	}
+}

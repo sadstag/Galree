@@ -2,8 +2,10 @@ import { getGalreeConfig } from "./config";
 
 export type SignedInGoogleIndentityInfo = {
     email: string;
-    fistName: string;
-    lastName: string;
+    name: string;
+    picture: string; // URL of profile image
+    iat: number; // JWT issued at (timestamp)
+    exp: number; // JWT expiration (timestamp)
 };
 
 /**
@@ -19,12 +21,18 @@ export function login(identity: SignedInGoogleIndentityInfo) {
         "claimedGoogleIdentity",
         JSON.stringify(identity),
     );
-    // TODO redirect to /datasource
+    // console.log(identity);
 }
 
 export function logout() {
     window.sessionStorage.removeItem("claimedGoogleIdentity");
-    // TODO redirect to /
+}
+
+export function getIndentity(): SignedInGoogleIndentityInfo | undefined {
+    const claimedIdentity = window.sessionStorage.getItem(
+        "claimedGoogleIdentity",
+    );
+    return claimedIdentity ? JSON.parse(claimedIdentity) : undefined;
 }
 
 export async function isExpectedGoogleIdentity(

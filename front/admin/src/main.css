@@ -1,4 +1,10 @@
 body {
 	font-family: Arial, Helvetica, sans-serif;
 	user-select: none;
+	margin: 0;
+}
+
+a {
+	color: red;
+	text-decoration: none;
 }
