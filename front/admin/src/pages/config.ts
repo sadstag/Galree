@@ -1,5 +1,6 @@
 export type GalreeConfig = {
     siteId: string;
+    clientId: string;
     hashed_siteAdminGoogleAccount: string;
     hashSalt: string;
     googleSheetId: string;

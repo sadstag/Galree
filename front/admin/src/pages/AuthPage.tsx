@@ -9,6 +9,7 @@ import {
 	type SignedInGoogleIndentityInfo,
 } from "./auth";
 import { useNavigate, usePreloadRoute } from "@solidjs/router";
+import { getGalreeConfig } from "./config";
 
 const googleSignInScript = document.createElement("script");
 googleSignInScript.async = false;
@@ -24,6 +25,7 @@ type AuthState = {
 export const AuthPage = () => {
 	const navigate = useNavigate();
 	const preload = usePreloadRoute();
+	const galreeConfig = getGalreeConfig();
 
 	const [authState, setAuthState] = createSignal<AuthState>({
 		type: "unauthenticated",
@@ -61,10 +63,8 @@ export const AuthPage = () => {
 		const checkGoogleSignInLoaded = window.setInterval(() => {
 			if (window.google) {
 				window.clearInterval(checkGoogleSignInLoaded);
-				// @ts-ignore
 				google.accounts.id.initialize({
-					client_id:
-						"263035609611-r5dtcum05k53388dt78l705228j3m9dv.apps.googleusercontent.com",
+					client_id: galreeConfig.clientId,
 					callback: handleCredentialResponse,
 					auto_select: false,
 				});

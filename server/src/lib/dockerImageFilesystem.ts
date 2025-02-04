@@ -166,7 +166,7 @@ export function createAdminSiteIndexFile(
 	dockerFSFolderPath: string,
 	adminFrontIndexHTMLFilepath: string,
 	siteId: string,
-	{ title, siteAdminGoogleAccount, googleSheetId }: SiteConfig,
+	{ title, siteAdminGoogleAccount, googleSheetId, clientId }: SiteConfig,
 ) {
 	const templateRenderer = new Eta();
 	const decoder = new TextDecoder('UTF-8');
@@ -195,6 +195,7 @@ export function createAdminSiteIndexFile(
 		config: 'window.galree = Object.freeze(' +
 			JSON.stringify({
 				siteId,
+				clientId,
 				hashSalt,
 				hashed_siteAdminGoogleAccount,
 				googleSheetId,

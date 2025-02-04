@@ -2,6 +2,7 @@ import { parse } from '@std/jsonc';
 
 export type GalreeConfig = {
 	GCPProjectId: string;
+	appClientId: string;
 	domain: string;
 	public_bucket: string;
 	sites: {
@@ -11,6 +12,7 @@ export type GalreeConfig = {
 
 export type SiteConfig = {
 	siteId: string;
+	clientId: string;
 	title: string;
 	siteAdminGoogleAccount: string;
 	googleSheetId: string;
@@ -130,6 +132,7 @@ export function validateSiteConfig(
 		};
 	}
 
+	ensureNonEmptyStringField(siteConfig, 'appClientId');
 	ensureNonEmptyStringField(siteConfig, 'title');
 	ensureNonEmptyStringField(siteConfig, 'siteAdminGoogleAccount');
 	ensureNonEmptyStringField(siteConfig, 'googleSheetId');

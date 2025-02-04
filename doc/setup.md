@@ -6,8 +6,11 @@ Create a dedicated project via the
 [google cloud console](https://console.cloud.google.com/), you'll give it in
 configuration as _GCPProjectId_.
 
-[setup google identity](setupGoogleIdentity) to allow admin front to log in site
-admin users.
+[setup google identity](./setupGoogleIdentity.md) to allow admin front to log in
+site admin users.
+
+[setup an API key](./setupApiKey.md) for the admin front to query google
+services.
 
 ## Locally
 
@@ -17,8 +20,9 @@ instructions]
 ```jsonc
 {
 	"GCPProjectId": "...",
+	"appClientId": "the client id of the web app you created in setup phase",
 	"domain": "foo.art", // a domain name you control
-	"public_bucket": "...", // where galleries artworks will go, must be unique worldwide, the server task scripts will create it  and configure it for you
+	"public_bucket": "...", // where galleries artworks will go. Must be unique worldwide. The server task scripts will create it  and configure it for you
 	"sites": {
 		"site id 1": { // site identifier, serves everywhere, should be fixed from the start
 			"title": "...", // site title, as found in HTML head

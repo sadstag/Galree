@@ -50,6 +50,7 @@ export function EtaPlugin({ siteId }: EtaPluginOptions): Plugin {
                         {
                             title: config.title,
                             siteId,
+                            clientId: siteConfig.clientId,
                             hashed_siteAdminGoogleAccount,
                             hashSalt,
                             googleSheetId: siteConfig.googleSheetId,
