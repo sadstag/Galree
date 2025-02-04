@@ -7,7 +7,7 @@ import NotFound from "./pages/NotFound";
 
 const rootElement = document.getElementById("root");
 if (rootElement) {
-	const AppPage = lazy(() => import("./pages/AppPage"));
+	const AppPage = lazy(() => import("./pages/app/AppPage"));
 
 	render(
 		() => (
