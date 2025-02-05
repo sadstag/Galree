@@ -1,4 +1,4 @@
-# Setting up an API key
+<!-- # Setting up an API key
 
 based on
 https://developers.google.com/sheets/api/quickstart/js#create_an_api_key
@@ -38,4 +38,4 @@ go to "Api and services / credentials"
 
 - choose _restrict key_
 - select "Google sheets API", come later if the API is not yet available, could
-  take some time after enabling it.
+  take some time after enabling it. -->

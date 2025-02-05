@@ -70,9 +70,9 @@ header to put in dev mode or it wont work ?
 go to https://console.cloud.google.com/auth/scopes
 
 - click "add or remove scopes"
-- select scope ".../auth/userinfo.email"
-- doc tell to check also ".../auth/userinfo.profile" and "openid", i'm not sure
-  it's needed for us
+- select scopes "https://www.googleapis.com/auth/userinfo.email"
+- select scopes "https://www.googleapis.com/auth/userinfo.profile"
+- select scopes "openid"
 - click "update"
 - click "save"
 

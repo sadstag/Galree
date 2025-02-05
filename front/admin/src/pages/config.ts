@@ -1,6 +1,7 @@
+// TODO put in store
 export type GalreeConfig = {
     siteId: string;
-    clientId: string;
+    appClientId: string;
     hashed_siteAdminGoogleAccount: string;
     hashSalt: string;
     googleSheetId: string;

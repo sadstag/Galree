@@ -4,6 +4,7 @@ import { lazy } from "solid-js";
 import { AuthPage } from "./pages/AuthPage";
 import "./main.css";
 import NotFound from "./pages/NotFound";
+import { AccesstokenProvider } from "./pages/AccesstokenProvider";
 
 const rootElement = document.getElementById("root");
 if (rootElement) {
@@ -11,13 +12,15 @@ if (rootElement) {
 
 	render(
 		() => (
-			<Router>
-				<Route path="/admin">
-					<Route path="/" component={AuthPage} />
-					<Route path="/in" component={AppPage} />
-				</Route>
-				<Route path="*" component={NotFound} />
-			</Router>
+			<AccesstokenProvider>
+				<Router>
+					<Route path="/admin">
+						<Route path="/" component={AuthPage} />
+						<Route path="/in" component={AppPage} />
+					</Route>
+					<Route path="*" component={NotFound} />
+				</Router>
+			</AccesstokenProvider>
 		),
 		rootElement,
 	);

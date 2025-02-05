@@ -1,16 +1,15 @@
-import { createEffect, onCleanup, useContext } from "solid-js";
+import { createEffect, onCleanup } from "solid-js";
 import styles from "./Header.module.css";
 import logo from "./logo_text.svg";
-import { AuthContext } from "../AuthContext";
-import { logout } from "../auth";
 import { useNavigate } from "@solidjs/router";
+import { useAccessToken } from "../AccesstokenProvider";
 
 export const Header = () => {
 	const navigate = useNavigate();
-	const identity = useContext(AuthContext);
+	const accessToken = useAccessToken();
 
 	const handleClickOnLogout = () => {
-		logout();
+		//accessToken()?.revoke();
 		navigate("/admin");
 	};
 
@@ -19,7 +18,7 @@ export const Header = () => {
 	let animation: number;
 	createEffect(() => {
 		animation = window.setInterval(() => {
-			hue += 5;
+			hue++;
 			headerRef.style.backgroundColor = `hsl(${hue}, 100%, 90%)`;
 		}, 1000);
 	});
@@ -38,12 +37,12 @@ export const Header = () => {
 			/>
 			<div class={styles.user}>
 				<img
-					src={identity?.picture}
+					src={accessToken()?.userInfo.picture}
 					alt="User pictural representation"
 					crossorigin="anonymous"
 					fetchpriority="low"
 				/>
-				<span>{identity?.name}</span>
+				<span>{accessToken()?.userInfo.name}</span>
 				<a href="/admin" onclick={handleClickOnLogout}>
 					Logout
 				</a>

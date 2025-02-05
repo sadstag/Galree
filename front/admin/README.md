@@ -49,6 +49,11 @@ file) of the site you want to start.
 build is done for the preview specifically, as it inject site config by
 evaluating ETA template tags as the server build scripts would do.
 
+## decisions
+
+- access tokens stored in memory, no persistent storage involved. Less
+  vulnerable, but if the user reloads the page, it must sign in again.
+
 ## questions to explore
 
 - resize of images : can be done by client ?

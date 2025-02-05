@@ -65,13 +65,15 @@ async function main() {
 			createAdminSiteIndexFile(
 				DOCKER_IMAGE_FILESYSTEM_TEMP_DIR,
 				ADMIN_FRONT_HTML_TEMPLATE_FILE,
+				config.appClientId,
 				siteId,
 				siteConfig,
 			);
 		} catch (e) {
 			die(
-				'Error creating files for site ' + siteId + ': ' +
-					(e as Error).message,
+				`Error creating files for site ${siteId}: ${
+					(e as Error).message
+				}`,
 			);
 		}
 	}

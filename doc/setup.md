@@ -2,15 +2,14 @@
 
 ## on GCP
 
-Create a dedicated project via the
-[google cloud console](https://console.cloud.google.com/), you'll give it in
-configuration as _GCPProjectId_.
+- Create a dedicated project via the
+  [google cloud console](https://console.cloud.google.com/), you'll put it in
+  configuration as _GCPProjectId_.
+- [setup google identity](./setupGoogleIdentity.md) to allow admin front to log
+  in site admin users.
 
-[setup google identity](./setupGoogleIdentity.md) to allow admin front to log in
-site admin users.
-
-[setup an API key](./setupApiKey.md) for the admin front to query google
-services.
+<!-- [setup an API key](./setupApiKey.md) for the admin front to query google
+services. -->
 
 ## Locally
 

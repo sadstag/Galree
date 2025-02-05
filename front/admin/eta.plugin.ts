@@ -17,8 +17,15 @@ export function EtaPlugin({ siteId }: EtaPluginOptions): Plugin {
 
             const configFile = "../../galree.jsonc";
             let config: {
-                [siteId: string]: { siteAdminGoogleAccount: string };
-            } = {};
+                appClientId: string;
+                sites: {
+                    [siteId: string]: {
+                        siteAdminGoogleAccount: string;
+                        googleSheetId: string;
+                        title: string;
+                    };
+                };
+            };
             try {
                 const configFileContent = readFileSync(configFile, "utf-8");
                 config = JSON.parse(
@@ -48,9 +55,9 @@ export function EtaPlugin({ siteId }: EtaPluginOptions): Plugin {
                 config: `;\nwindow.galree = Object.freeze(${
                     JSON.stringify(
                         {
-                            title: config.title,
+                            title: siteConfig.title,
                             siteId,
-                            clientId: siteConfig.clientId,
+                            appClientId: config.appClientId,
                             hashed_siteAdminGoogleAccount,
                             hashSalt,
                             googleSheetId: siteConfig.googleSheetId,

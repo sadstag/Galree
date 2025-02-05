@@ -1,34 +1,47 @@
-import { createSignal, onMount, Show } from "solid-js";
-import { jwtDecode } from "jwt-decode";
+import { createSignal, Show } from "solid-js";
 import styles from "./AuthPage.module.css";
-
-import {
-	isExpectedGoogleIdentity,
-	login,
-	logout,
-	type SignedInGoogleIndentityInfo,
-} from "./auth";
 import { useNavigate, usePreloadRoute } from "@solidjs/router";
+import {
+	requestAccessToken,
+	type AccessTokenRequestResponse,
+} from "./google/identity";
 import { getGalreeConfig } from "./config";
+import { useAccessTokenRW } from "./AccesstokenProvider";
 
-const googleSignInScript = document.createElement("script");
-googleSignInScript.async = false;
-googleSignInScript.src = "https://accounts.google.com/gsi/client";
-document.head.appendChild(googleSignInScript);
-
-// no 'authenticated_expected_identity' because in tat case we redirect to app 'private' part
-type AuthState = {
-	type: "unauthenticated" | "authenticated_unexpected_identity";
-	identityInfo?: SignedInGoogleIndentityInfo;
+type AuthOutcomeError = {
+	outcome: "error";
+	error: Error;
 };
+
+type AuthOutcomeUnexpectedUser = {
+	outcome: "unexpected_user";
+} & AccessTokenRequestResponse;
+
+type AuthOutcome =
+	| { outcome: "unauthenticated" }
+	| AuthOutcomeError
+	| AuthOutcomeUnexpectedUser;
+
+function authOutcomeAsError(
+	outcome: AuthOutcome,
+): AuthOutcomeError | undefined {
+	if (outcome.outcome === "error") return outcome as AuthOutcomeError;
+}
+
+function authOutcomeAsUnexpectedUser(
+	outcome: AuthOutcome,
+): AuthOutcomeUnexpectedUser | undefined {
+	if (outcome.outcome === "unexpected_user")
+		return outcome as AuthOutcomeUnexpectedUser;
+}
 
 export const AuthPage = () => {
 	const navigate = useNavigate();
 	const preload = usePreloadRoute();
-	const galreeConfig = getGalreeConfig();
+	const [, setAccessToken] = useAccessTokenRW();
 
-	const [authState, setAuthState] = createSignal<AuthState>({
-		type: "unauthenticated",
+	const [authOutcome, setAuthOutcome] = createSignal<AuthOutcome>({
+		outcome: "unauthenticated",
 	});
 
 	function handleMouseOverSigninButton() {
@@ -38,69 +51,29 @@ export const AuthPage = () => {
 		);
 	}
 
-	function handleCredentialResponse(
-		response: google.accounts.id.CredentialResponse,
-	) {
-		const identityInfo = jwtDecode(
-			response.credential,
-		) as SignedInGoogleIndentityInfo;
+	const handleClick = async () => {
+		let response: AccessTokenRequestResponse;
+		try {
+			response = await requestAccessToken(getGalreeConfig().appClientId);
+		} catch (e) {
+			setAuthOutcome({ outcome: "error", error: e as Error });
+			return;
+		}
 
-		isExpectedGoogleIdentity(identityInfo).then((isExpected) => {
-			if (isExpected) {
-				login(identityInfo);
-				navigate("/admin/in");
-			} else {
-				setAuthState({
-					type: "authenticated_unexpected_identity",
-					identityInfo,
-				});
-			}
-		});
-	}
-
-	onMount(() => {
-		let retry = 0;
-		const checkGoogleSignInLoaded = window.setInterval(() => {
-			if (window.google) {
-				window.clearInterval(checkGoogleSignInLoaded);
-				google.accounts.id.initialize({
-					client_id: galreeConfig.clientId,
-					callback: handleCredentialResponse,
-					auto_select: false,
-				});
-				window.google.accounts.id.renderButton(
-					// biome-ignore lint/style/noNonNullAssertion: the button will be there in onMount()
-					document.getElementById("sign_in")!,
-					{
-						type: "standard",
-						locale: "en-US",
-						theme: "outline",
-						size: "medium",
-						text: "signin",
-					},
-				);
-				google.accounts.id.prompt();
-
-				// TODO redirect to another page
-				// then display name, picture
-				// check that email correspond to site admin account
-				// welcome or sorry
-				// sorry : propose log in with another account
-				console.log("in checkGoogleSignInLoaded");
-			} else if (retry > 10) {
-				window.clearInterval(checkGoogleSignInLoaded);
-				// TODO display error in page and ask reload
-				console.error("could not load google sign in script");
-			} else {
-				console.log("will retry");
-				retry++;
-			}
-		}, 200);
-	});
+		if (await isExpectedUser(response.userInfo.email)) {
+			setAccessToken(response);
+			navigate("/admin/in");
+		} else {
+			setAuthOutcome({
+				outcome: "unexpected_user",
+				...response,
+			});
+		}
+	};
 
 	return (
 		<div class={styles.auth_page}>
-			<Show when={authState().type === "unauthenticated"}>
+			<Show when={authOutcome().outcome === "unauthenticated"}>
 				<h1>Welcome where you know you are</h1>
 				<div
 					id="sign_in"
@@ -108,10 +81,21 @@ export const AuthPage = () => {
 					onMouseOver={handleMouseOverSigninButton}
 					onFocus={handleMouseOverSigninButton}
 				/>
+				<button
+					type="button"
+					onClick={handleClick}
+					onMouseOver={handleMouseOverSigninButton}
+					onFocus={handleMouseOverSigninButton}
+				>
+					Who's there ?
+				</button>
 			</Show>
-			<Show when={authState().type === "authenticated_unexpected_identity"}>
+			<Show when={authOutcome().outcome === "unexpected_user"}>
 				<>
-					<div>Signed in as {authState().identityInfo?.email}</div>
+					<div>
+						Signed in as{" "}
+						{authOutcomeAsUnexpectedUser(authOutcome())?.userInfo.email}
+					</div>
 					<p>
 						You were not expected. Maybe you have several google account and did
 						not select the right one to authenticate ?
@@ -120,14 +104,35 @@ export const AuthPage = () => {
 						type="button"
 						id="signOutButton"
 						onClick={() => {
-							logout();
-							window.location.reload();
+							setAuthOutcome({ outcome: "unauthenticated" });
 						}}
 					>
 						Sign out
 					</button>
 				</>
 			</Show>
+			<Show when={authOutcome().outcome === "error"}>
+				<p>Sign in error: {authOutcomeAsError(authOutcome())?.error.message}</p>
+			</Show>
 		</div>
 	);
 };
+
+export async function isExpectedUser(email: string): Promise<boolean> {
+	const { hashed_siteAdminGoogleAccount, hashSalt } = getGalreeConfig();
+
+	function buf2hex(buffer: ArrayBuffer) {
+		return [...new Uint8Array(buffer)]
+			.map((x) => x.toString(16).padStart(2, "0"))
+			.join("");
+	}
+
+	const identityEmailHash = buf2hex(
+		await window.crypto.subtle.digest(
+			"SHA-256",
+			new TextEncoder().encode(email + hashSalt),
+		),
+	);
+
+	return hashed_siteAdminGoogleAccount === identityEmailHash;
+}
