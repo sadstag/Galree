@@ -53,12 +53,3 @@ evaluating ETA template tags as the server build scripts would do.
 
 - access tokens stored in memory, no persistent storage involved. Less
   vulnerable, but if the user reloads the page, it must sign in again.
-
-## questions to explore
-
-- resize of images : can be done by client ?
-  - look at https://github.com/nodeca/pica
-  - https://silvia-odwyer.github.io/photon/
-  - https://github.com/juunini/webp-converter-browser
-  - https://github.com/kleisauke/wasm-vips !
-  - https://github.com/GoogleChromeLabs/squoosh

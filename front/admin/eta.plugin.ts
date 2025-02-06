@@ -18,6 +18,7 @@ export function EtaPlugin({ siteId }: EtaPluginOptions): Plugin {
             const configFile = "../../galree.jsonc";
             let config: {
                 appClientId: string;
+                public_bucket: string;
                 sites: {
                     [siteId: string]: {
                         siteAdminGoogleAccount: string;
@@ -61,6 +62,7 @@ export function EtaPlugin({ siteId }: EtaPluginOptions): Plugin {
                             hashed_siteAdminGoogleAccount,
                             hashSalt,
                             googleSheetId: siteConfig.googleSheetId,
+                            bucket: config.public_bucket,
                         },
                         null,
                         "\t",

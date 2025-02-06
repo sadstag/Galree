@@ -166,6 +166,7 @@ export function createAdminSiteIndexFile(
 	dockerFSFolderPath: string,
 	adminFrontIndexHTMLFilepath: string,
 	appClientId: string,
+	bucket: string,
 	siteId: string,
 	{ title, siteAdminGoogleAccount, googleSheetId }: SiteConfig,
 ) {
@@ -200,6 +201,7 @@ export function createAdminSiteIndexFile(
 				hashSalt,
 				hashed_siteAdminGoogleAccount,
 				googleSheetId,
+				bucket,
 			}) + ')',
 	});
 

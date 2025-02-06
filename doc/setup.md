@@ -5,8 +5,8 @@
 - Create a dedicated project via the
   [google cloud console](https://console.cloud.google.com/), you'll put it in
   configuration as _GCPProjectId_.
-- [setup google identity](./setupGoogleIdentity.md) to allow admin front to log
-  in site admin users.
+- [setup the app](./setupProject) to allow admin front to sign in users and do
+  operations on their behalf.
 
 <!-- [setup an API key](./setupApiKey.md) for the admin front to query google
 services. -->

@@ -66,6 +66,7 @@ async function main() {
 				DOCKER_IMAGE_FILESYSTEM_TEMP_DIR,
 				ADMIN_FRONT_HTML_TEMPLATE_FILE,
 				config.appClientId,
+				config.public_bucket,
 				siteId,
 				siteConfig,
 			);

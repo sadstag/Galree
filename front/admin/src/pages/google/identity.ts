@@ -1,7 +1,10 @@
 const scope = [
-    "https://www.googleapis.com/auth/spreadsheets.readonly",
+    // "https://www.googleapis.com/auth/spreadsheets.readonly",
     "https://www.googleapis.com/auth/userinfo.email",
+    // getting user name
     "https://www.googleapis.com/auth/userinfo.profile",
+    // reading and writing to user part of the bucket
+    "https://www.googleapis.com/auth/devstorage.read_write",
     "openid",
 ].join(" ");
 

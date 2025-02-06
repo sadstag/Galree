@@ -5,6 +5,7 @@ export type GalreeConfig = {
     hashed_siteAdminGoogleAccount: string;
     hashSalt: string;
     googleSheetId: string;
+    bucket: string;
 };
 
 declare global {

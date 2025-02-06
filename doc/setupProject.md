@@ -1,4 +1,4 @@
-# Setting up Google Identity
+# Setting up the project
 
 based on
 https://developers.google.com/identity/gsi/web/guides/get-google-api-clientid
@@ -73,6 +73,7 @@ go to https://console.cloud.google.com/auth/scopes
 - select scopes "https://www.googleapis.com/auth/userinfo.email"
 - select scopes "https://www.googleapis.com/auth/userinfo.profile"
 - select scopes "openid"
+- add scope "https://www.googleapis.com/auth/devstorage.read_write"
 - click "update"
 - click "save"
 
