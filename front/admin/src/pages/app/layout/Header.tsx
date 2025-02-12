@@ -1,12 +1,12 @@
-import { createEffect, onCleanup } from "solid-js";
+import { createEffect, onCleanup, useContext } from "solid-js";
 import styles from "./Header.module.css";
 import logo from "./logo_text.svg";
 import { useNavigate } from "@solidjs/router";
-import { useAccessToken } from "../AccesstokenProvider";
+import { StoreContext } from "../../../store/StoreContext";
 
 export const Header = () => {
 	const navigate = useNavigate();
-	const accessToken = useAccessToken();
+	const { state } = useContext(StoreContext);
 
 	const handleClickOnLogout = () => {
 		//accessToken()?.revoke();
@@ -37,12 +37,12 @@ export const Header = () => {
 			/>
 			<div class={styles.user}>
 				<img
-					src={accessToken()?.userInfo.picture}
+					src={state.userInfo.picture}
 					alt="User pictural representation"
 					crossorigin="anonymous"
 					fetchpriority="low"
 				/>
-				<span>{accessToken()?.userInfo.name}</span>
+				<span>{state.userInfo.name}</span>
 				<a href="/admin" onclick={handleClickOnLogout}>
 					Logout
 				</a>
