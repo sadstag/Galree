@@ -1,10 +1,10 @@
 import styles from "./AppPage.module.css";
-import { Header } from "../layout/Header";
+import { Header } from "./layout/Header";
 import { useNavigate } from "@solidjs/router";
-import { createSignal, For, lazy, type Component } from "solid-js";
+import { createSignal, For, lazy, useContext, type Component } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import CatalogPage from "./subpages/catalog/CatalogPage";
-import { useAccessToken } from "../AccesstokenProvider";
+import { StoreContext } from "../../store/StoreContext";
 
 const Tabs = ["Catalog", "Images"] as const;
 type Tab = (typeof Tabs)[number];
@@ -17,9 +17,9 @@ const contentComponents: { [tab in Tab]: Component } = {
 const AppPage = () => {
 	const navigate = useNavigate();
 
-	const accessToken = useAccessToken();
+	const { state } = useContext(StoreContext);
 
-	if (!accessToken()) {
+	if (!state.accessToken) {
 		console.warn("in /admin/in and no access token, redirecting to /admin...");
 		navigate("/admin");
 		return;

@@ -1,16 +1,17 @@
-import { useAccessToken } from "../../../AccesstokenProvider";
+import { useContext } from "solid-js";
 import { getGalreeConfig } from "../../../config";
 import { listObjects, postObject } from "../../../google/storage";
+import { StoreContext } from "../../../../store/StoreContext";
 
 const ImagesPage = () => {
 	const config = getGalreeConfig();
-	const accessToken = useAccessToken();
+	const { state } = useContext(StoreContext);
 
 	const handleListClick = async () => {
 		const bucketObjects = await listObjects(
 			config.bucket,
 			config.siteId,
-			accessToken()?.accessToken!,
+			state.accessToken,
 		);
 		console.log({ bucketObjects });
 	};
@@ -19,7 +20,7 @@ const ImagesPage = () => {
 		const response = await postObject(
 			config.bucket,
 			`${config.siteId}/${Math.ceil(Math.random() * 10000)}.txt`,
-			accessToken()?.accessToken!,
+			state.accessToken,
 		);
 		console.log({ putObjectResponse: response });
 	};

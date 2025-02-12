@@ -4,15 +4,20 @@ import { lazy } from "solid-js";
 import { AuthPage } from "./pages/AuthPage";
 import "./main.css";
 import NotFound from "./pages/NotFound";
-import { AccesstokenProvider } from "./pages/AccesstokenProvider";
+import { createStore } from "solid-js/store";
+import { StoreContext } from "./store/StoreContext";
+import { initialStore } from "./store/Store";
+import "solid-devtools";
 
 const rootElement = document.getElementById("root");
 if (rootElement) {
 	const AppPage = lazy(() => import("./pages/app/AppPage"));
 
+	const [state, setState] = createStore(initialStore);
+
 	render(
 		() => (
-			<AccesstokenProvider>
+			<StoreContext.Provider value={{ state, setState }}>
 				<Router>
 					<Route path="/admin">
 						<Route path="/" component={AuthPage} />
@@ -20,7 +25,7 @@ if (rootElement) {
 					</Route>
 					<Route path="*" component={NotFound} />
 				</Router>
-			</AccesstokenProvider>
+			</StoreContext.Provider>
 		),
 		rootElement,
 	);

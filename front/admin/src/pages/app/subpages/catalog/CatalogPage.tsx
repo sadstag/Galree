@@ -1,14 +1,14 @@
-import { useAccessToken } from "../../../AccesstokenProvider";
+import { useContext } from "solid-js";
+import { StoreContext } from "../../../../store/StoreContext";
 import { getGalreeConfig } from "../../../config";
 import { getSheetData } from "../../../google/sheet";
 
 const CatalogPage = () => {
-	const accessToken = useAccessToken();
+	const { state } = useContext(StoreContext);
 	const loadSheet = async () => {
 		const sheetData = await getSheetData(
 			getGalreeConfig().googleSheetId,
-			// biome-ignore lint/style/noNonNullAssertion: <explanation>
-			accessToken()?.accessToken!,
+			state.accessToken,
 		);
 		console.log({ sheetData });
 	};

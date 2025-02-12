@@ -54,7 +54,7 @@ export async function requestAccessToken(
     };
 }
 
-type UserInfo = {
+export type UserInfo = {
     sub: string; // user id
 
     email: string;

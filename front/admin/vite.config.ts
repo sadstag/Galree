@@ -9,10 +9,10 @@ export default defineConfig(({ command }) => {
 		process.argv.includes("--for-preview");
 
 	const plugins = [
+		solid(),
 		devtools({
 			autoname: true,
 		}),
-		solid(),
 		legacy({
 			targets: ["defaults", "not IE 11"],
 		}),

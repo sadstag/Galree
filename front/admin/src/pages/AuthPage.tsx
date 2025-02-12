@@ -1,4 +1,4 @@
-import { createSignal, Show } from "solid-js";
+import { createSignal, Show, useContext } from "solid-js";
 import styles from "./AuthPage.module.css";
 import { useNavigate, usePreloadRoute } from "@solidjs/router";
 import {
@@ -6,7 +6,8 @@ import {
 	type AccessTokenRequestResponse,
 } from "./google/identity";
 import { getGalreeConfig } from "./config";
-import { useAccessTokenRW } from "./AccesstokenProvider";
+import { StoreContext } from "../store/StoreContext";
+import { produce } from "solid-js/store";
 
 type AuthOutcomeError = {
 	outcome: "error";
@@ -38,12 +39,26 @@ function authOutcomeAsUnexpectedUser(
 export const AuthPage = () => {
 	const navigate = useNavigate();
 	const preload = usePreloadRoute();
-	const [, setAccessToken] = useAccessTokenRW();
+	const { setState } = useContext(StoreContext);
 
 	const [authOutcome, setAuthOutcome] = createSignal<AuthOutcome>({
 		outcome: "unauthenticated",
 	});
 
+	/*************  ✨ Codeium Command ⭐  *************/
+	/**
+	 * Handle mouse over event of the "Sign in" button.
+	 *
+	 * This will preload the /admin/in page, which will do the actual authentication.
+	 *
+	 * @remarks
+	 * The reason we don't do the actual authentication here is because the authentication
+	 * needs to happen in a context where the user can be redirected to the authentication
+	 * page, and after authentication, the user needs to be redirected back to the
+	 * /admin/in page. This is hard to do from here because we don't have a way to redirect
+	 * the user to a different page from here.
+	 */
+	/******  bd6a59d2-c968-42eb-98c5-7e3ebc7d9bab  *******/
 	function handleMouseOverSigninButton() {
 		preload(
 			"/admin/in",
@@ -61,7 +76,12 @@ export const AuthPage = () => {
 		}
 
 		if (await isExpectedUser(response.userInfo.email)) {
-			setAccessToken(response);
+			setState(
+				produce((state) => {
+					state.accessToken = response.accessToken;
+					state.userInfo = response.userInfo;
+				}),
+			);
 			navigate("/admin/in");
 		} else {
 			setAuthOutcome({
