@@ -1,4 +1,4 @@
-import { GOOGLE_STORAGE_BUCKET_BASEURL } from "../../common/const";
+import { GOOGLE_STORAGE_BUCKET_BASEURL } from "@common/const";
 import { fileNames } from "./files";
 import type { FILE_IDS, SITE_URLS_MAPPING } from "./types";
 

@@ -35,18 +35,17 @@ export default defineConfig(({ command }) => {
 	return ({
 		resolve: {
 			alias: {
-				"@common": `${__dirname}/../../common`,
-				"@frontCommon": `${__dirname}/../common`,
+				"@common": `${__dirname}/../common`,
+				"@config": `${__dirname}/src/config`,
 			},
 		},
 		plugins,
 		publicDir: "./public",
 		server: {
 			strictPort: true,
-			open: "/admin",
+			open: true,
 		},
 		build: {
-			assetsDir: "admin_assets",
 			assetsInlineLimit: 0, // for tests, to be eventually reverted
 			outDir: "./dist",
 			emptyOutDir: true,

@@ -39,7 +39,6 @@ function startContainer(config: GalreeConfig) {
 			const address = 'http://' + siteConfig.subdomain + '.' +
 				config.domain + ':8080';
 			message += '\t' + address + '\n';
-			message += '\t' + address + '/admin\n';
 		}
 		stepEnds(message);
 	} else {

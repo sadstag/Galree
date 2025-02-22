@@ -1,4 +1,4 @@
-import styles from "./AppPage.module.css";
+import styles from "./AdminPage.module.css";
 import { Header } from "./layout/Header";
 import { useNavigate } from "@solidjs/router";
 import { createSignal, For, lazy, useContext, type Component } from "solid-js";
@@ -15,7 +15,7 @@ const contentComponents: { [tab in Tab]: Component } = {
 	Images: lazy(() => import("./subpages/images/ImagesPage")),
 };
 
-const AppPage = () => {
+const AdminPage = () => {
 	const navigate = useNavigate();
 
 	const { state } = useContext(StoreContext);
@@ -67,4 +67,4 @@ const Navitem = (props: NavitemProps) => {
 	);
 };
 
-export default AppPage;
+export default AdminPage;

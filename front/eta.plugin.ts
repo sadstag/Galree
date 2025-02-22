@@ -15,7 +15,7 @@ export function EtaPlugin({ siteId }: EtaPluginOptions): Plugin {
             // reading galree config in a brutal way, it will only be used in dev mode
             const templateRenderer = new Eta();
 
-            const configFile = "../../galree.jsonc";
+            const configFile = "../galree.jsonc";
             let config: {
                 appClientId: string;
                 public_bucket: string;

@@ -1,11 +1,14 @@
-# Galree admin front
+# Galree front
 
 Ensure you have a valid [setup](../doc/setup.md).
 
 ## Goal
 
-- Galree site admins can log in
-- They manage their artworks
+- visitors
+  - browse artworks
+- admins
+  - can log in
+  - manage their artworks
 
 ## install
 

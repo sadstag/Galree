@@ -1,10 +1,7 @@
 import { randomInt } from 'node:crypto';
-import {
-	ADMIN_FRONT_ASSETS_FOLDER,
-	PUBLIC_FRONT_ASSETS_FOLDER,
-} from '../const.ts';
 import { SiteConfig } from './galreeConfig.ts';
 import { Eta } from 'jsr:@eta-dev/eta';
+import { FRONT_ASSETS_FOLDER } from '../const.ts';
 const { createHash } = await import('node:crypto');
 
 export function prepareTempDirectory(folderPath: string) {
@@ -37,26 +34,13 @@ export function prepareTempDirectory(folderPath: string) {
 	}
 	try {
 		recursiveFolderCopy(
-			PUBLIC_FRONT_ASSETS_FOLDER,
+			FRONT_ASSETS_FOLDER,
 			folderPath + '/assets',
 		);
 	} catch (e) {
 		throw Error(
-			'Could not recursively copy folder ' + PUBLIC_FRONT_ASSETS_FOLDER +
+			'Could not recursively copy folder ' + FRONT_ASSETS_FOLDER +
 				' to ' + folderPath + '/assets' +
-				': ' + (e as Error).message,
-		);
-	}
-
-	try {
-		recursiveFolderCopy(
-			ADMIN_FRONT_ASSETS_FOLDER,
-			folderPath + '/admin_assets',
-		);
-	} catch (e) {
-		throw Error(
-			'Could not recursively copy folder ' + PUBLIC_FRONT_ASSETS_FOLDER +
-				' to ' + folderPath + '/admin_assets' +
 				': ' + (e as Error).message,
 		);
 	}
@@ -94,14 +78,6 @@ export function createSiteFolder(dockerFSFolderPath: string, siteId: string) {
 		);
 	}
 	try {
-		Deno.mkdirSync(siteFolderpath + '/admin');
-	} catch (e) {
-		throw Error(
-			'Could not create site folder (' + siteFolderpath +
-				'/admin): ' + (e as Error).message,
-		);
-	}
-	try {
 		Deno.symlinkSync(
 			'../../assets',
 			siteFolderpath + '/assets',
@@ -112,59 +88,11 @@ export function createSiteFolder(dockerFSFolderPath: string, siteId: string) {
 				'/assets): ' + (e as Error).message,
 		);
 	}
-
-	try {
-		Deno.symlinkSync(
-			'../../admin_assets',
-			siteFolderpath + '/admin_assets',
-		);
-	} catch (e) {
-		throw Error(
-			'Could not create admin assets symlink (' + siteFolderpath +
-				'/admin_assets): ' + (e as Error).message,
-		);
-	}
 }
 
-export function createPublicSiteIndexFile(
+export function createSiteIndexFile(
 	dockerFSFolderPath: string,
-	publicFrontIndexHTMLFilepath: string,
-	siteId: string,
-	{ title }: SiteConfig,
-) {
-	const templateRenderer = new Eta();
-	const decoder = new TextDecoder('UTF-8');
-	const encoder = new TextEncoder();
-
-	let HTMLTemplate;
-	try {
-		const data = Deno.readFileSync(
-			publicFrontIndexHTMLFilepath,
-		);
-		HTMLTemplate = decoder.decode(data);
-	} catch (e) {
-		throw Error(
-			'Could not read public front index file (' +
-				publicFrontIndexHTMLFilepath + '): ' + (e as Error).message,
-		);
-	}
-
-	const html = templateRenderer.renderString(HTMLTemplate, {
-		siteId,
-		title,
-		config: 'window.galree =  Object.freeze(' +
-			JSON.stringify({ siteId }) + ')',
-	});
-
-	const destFilepath = dockerFSFolderPath + '/sites/' + siteId +
-		'/index.html';
-
-	Deno.writeFileSync(destFilepath, encoder.encode(html));
-}
-
-export function createAdminSiteIndexFile(
-	dockerFSFolderPath: string,
-	adminFrontIndexHTMLFilepath: string,
+	frontIndexHTMLFilepath: string,
 	appClientId: string,
 	bucket: string,
 	siteId: string,
@@ -177,13 +105,13 @@ export function createAdminSiteIndexFile(
 	let HTMLTemplate;
 	try {
 		const data = Deno.readFileSync(
-			adminFrontIndexHTMLFilepath,
+			frontIndexHTMLFilepath,
 		);
 		HTMLTemplate = decoder.decode(data);
 	} catch (e) {
 		throw Error(
-			'Could not read admin front index file (' +
-				adminFrontIndexHTMLFilepath + '): ' + (e as Error).message,
+			'Could not read front index file (' +
+				frontIndexHTMLFilepath + '): ' + (e as Error).message,
 		);
 	}
 
@@ -206,7 +134,7 @@ export function createAdminSiteIndexFile(
 	});
 
 	const destFilepath = dockerFSFolderPath + '/sites/' + siteId +
-		'/admin/index.html';
+		'/index.html';
 
 	Deno.writeFileSync(destFilepath, encoder.encode(html));
 }

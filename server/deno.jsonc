@@ -1,11 +1,10 @@
 {
   "tasks": {
     "provision": "deno run --check --allow-read --allow-env --allow-net --allow-run --allow-sys src/provision.ts",
-    "build-admin-front": "cd ../front/admin && pnpm build",
-    "build-public-front": "cd ../front/public && pnpm build",
+    "build-front": "cd ../front && pnpm build",
     // ensure fronts are buildt, and not in preview mode (server scripts could not inject correct config for each site)
-    "build-dev": "deno run build-admin-front &&deno run build-public-front && deno run --check --allow-read --allow-write --allow-run src/build.ts --dev",
-    "build": "deno run build-admin-front && deno run build-public-front && deno run --check --allow-read --allow-write --allow-run src/build.ts",
+    "build-dev": "deno run build-front && deno run --check --allow-read --allow-write --allow-run src/build.ts --dev",
+    "build": "deno run build-front && deno run --check --allow-read --allow-write --allow-run src/build.ts",
     "run-dev": "deno run  --allow-read --allow-run src/run-dev.ts"
   },
   "imports": {

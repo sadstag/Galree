@@ -7,7 +7,6 @@ import {
 } from "./google/identity";
 import { StoreContext } from "../store/StoreContext";
 import { produce } from "solid-js/store";
-import { getGalreeFrontConfig } from "@frontCommon/config";
 
 type AuthOutcomeError = {
 	outcome: "error";
@@ -36,7 +35,7 @@ function authOutcomeAsUnexpectedUser(
 		return outcome as AuthOutcomeUnexpectedUser;
 }
 
-export const AuthPage = () => {
+const AuthPage = () => {
 	const navigate = useNavigate();
 	const preload = usePreloadRoute();
 	const { state, setState } = useContext(StoreContext);
@@ -61,7 +60,13 @@ export const AuthPage = () => {
 			return;
 		}
 
-		if (await isExpectedUser(response.userInfo.email)) {
+		if (
+			await isExpectedUser(
+				response.userInfo.email,
+				state.config.hashed_siteAdminGoogleAccount,
+				state.config.hashSalt,
+			)
+		) {
 			setState(
 				produce((state) => {
 					state.accessToken = response.accessToken;
@@ -124,10 +129,11 @@ export const AuthPage = () => {
 	);
 };
 
-export async function isExpectedUser(email: string): Promise<boolean> {
-	const { hashed_siteAdminGoogleAccount, hashSalt } =
-		getGalreeFrontConfig<"admin">();
-
+export async function isExpectedUser(
+	email: string,
+	expectedUserHash: string,
+	hashSalt: string,
+): Promise<boolean> {
 	function buf2hex(buffer: ArrayBuffer) {
 		return [...new Uint8Array(buffer)]
 			.map((x) => x.toString(16).padStart(2, "0"))
@@ -141,5 +147,7 @@ export async function isExpectedUser(email: string): Promise<boolean> {
 		),
 	);
 
-	return hashed_siteAdminGoogleAccount === identityEmailHash;
+	return expectedUserHash === identityEmailHash;
 }
+
+export default AuthPage;

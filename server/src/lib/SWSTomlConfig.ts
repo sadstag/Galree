@@ -43,10 +43,6 @@ export function generateSWSTomlConfig(
 				'source': '/index.html',
 				'destination': '/',
 				'kind': 301,
-			}, {
-				'source': '/admin/index.html',
-				'destination': '/admin',
-				'kind': 301,
 			}],
 
 			//

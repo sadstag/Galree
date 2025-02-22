@@ -1,13 +1,11 @@
 import {
-	ADMIN_FRONT_HTML_TEMPLATE_FILE,
 	DOCKER_IMAGE_FILESYSTEM_TEMP_DIR,
+	FRONT_HTML_TEMPLATE_FILE,
 	getDockerImageName,
-	PUBLIC_FRONT_HTML_TEMPLATE_FILE,
 } from './const.ts';
 import {
-	createAdminSiteIndexFile,
-	createPublicSiteIndexFile,
 	createSiteFolder,
+	createSiteIndexFile,
 	prepareTempDirectory,
 } from './lib/dockerImageFilesystem.ts';
 import { die, error, info, stepBegins, stepEnds } from './lib/feedback.ts';
@@ -56,15 +54,9 @@ async function main() {
 	for (const [siteId, siteConfig] of Object.entries(config.sites)) {
 		try {
 			createSiteFolder(DOCKER_IMAGE_FILESYSTEM_TEMP_DIR, siteId);
-			createPublicSiteIndexFile(
+			createSiteIndexFile(
 				DOCKER_IMAGE_FILESYSTEM_TEMP_DIR,
-				PUBLIC_FRONT_HTML_TEMPLATE_FILE,
-				siteId,
-				siteConfig,
-			);
-			createAdminSiteIndexFile(
-				DOCKER_IMAGE_FILESYSTEM_TEMP_DIR,
-				ADMIN_FRONT_HTML_TEMPLATE_FILE,
+				FRONT_HTML_TEMPLATE_FILE,
 				config.appClientId,
 				config.public_bucket,
 				siteId,

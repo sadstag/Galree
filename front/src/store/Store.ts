@@ -1,10 +1,10 @@
+import type { SITE_URLS_MAPPING } from "@config/types";
 import type { UserInfo } from "../pages/google/identity";
-import type { SITE_URLS_MAPPING } from "@frontCommon/types";
-import { filePublicURLConstructor } from "@frontCommon/paths";
 import type { GalreeFrontConfig } from "@common/frontConfig";
+import { filePublicURLConstructor } from "@config/paths";
 
 export type State = {
-    config: GalreeFrontConfig<"admin">;
+    config: GalreeFrontConfig;
     accessToken: string;
     userInfo: UserInfo;
     publicDatabase: PublicDatabase;
@@ -26,7 +26,7 @@ type Artwork = {
     id: string;
 };
 
-export const initialStore: (config: GalreeFrontConfig<"admin">) => State = (
+export const initialStore: (config: GalreeFrontConfig) => State = (
     config,
 ) => ({
     config,
