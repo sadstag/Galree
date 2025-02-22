@@ -1,4 +1,4 @@
-import { parse } from '@std/jsonc';
+import { parse } from "@std/jsonc";
 
 export type GalreeConfig = {
 	GCPProjectId: string;
@@ -36,7 +36,7 @@ export async function readGalreeConfigFromFile(
 		if (!(err instanceof Deno.errors.NotFound)) {
 			throw err;
 		}
-		throw Error('File ' + filePath + ' not found, please read the README');
+		throw Error("File " + filePath + " not found, please read the README");
 	}
 
 	const text = await Deno.readTextFile(filePath);
@@ -46,7 +46,7 @@ export async function readGalreeConfigFromFile(
 		config = parse(text);
 	} catch (_) {
 		throw Error(
-			'File ' + filePath + ' does not contain a valid JSON structure',
+			"File " + filePath + " does not contain a valid JSON structure",
 		);
 	}
 
@@ -54,7 +54,7 @@ export async function readGalreeConfigFromFile(
 
 	if (!validationResult.isValid) {
 		throw Error(
-			'Error reading ' + filePath + ': ' + validationResult.error,
+			"Error reading " + filePath + ": " + validationResult.error,
 		);
 	}
 
@@ -67,17 +67,18 @@ function validateGalreeConfig(
 	if (!isRecord(config)) {
 		return {
 			isValid: false,
-			error: 'Config must be an object',
+			error: "Config must be an object",
 		};
 	}
 
-	ensureNonEmptyStringField(config, 'GCPProjectId');
-	ensureNonEmptyStringField(config, 'domain');
-	ensureNonEmptyStringField(config, 'public_bucket');
+	ensureNonEmptyStringField(config, "GCPProjectId");
+	ensureNonEmptyStringField(config, "domain");
+	ensureNonEmptyStringField(config, "public_bucket");
+	ensureNonEmptyStringField(config, "appClientId");
 
 	if (
-		!('sites' in config && isRecord(config['sites']) &&
-			Object.entries(config['sites']).length > 0)
+		!("sites" in config && isRecord(config.sites) &&
+			Object.entries(config.sites).length > 0)
 	) {
 		return {
 			isValid: false,
@@ -87,7 +88,7 @@ function validateGalreeConfig(
 
 	for (
 		const [siteId, siteConfig] of Object.entries(
-			config['sites'] as Record<string, unknown>,
+			config["sites"] as Record<string, unknown>,
 		)
 	) {
 		const validationResult = validateSiteConfig(siteId, siteConfig);
@@ -97,7 +98,7 @@ function validateGalreeConfig(
 				error: 'Site "' + siteId + '": ' + validationResult.error,
 			};
 		}
-		config['sites'][siteId] = validationResult.config;
+		config["sites"][siteId] = validationResult.config;
 	}
 
 	const galreeConfig = config as GalreeConfig;
@@ -128,15 +129,14 @@ export function validateSiteConfig(
 	if (!isRecord(siteConfig)) {
 		return {
 			isValid: false,
-			error: 'some site config is not an object',
+			error: "some site config is not an object",
 		};
 	}
 
-	ensureNonEmptyStringField(siteConfig, 'appClientId');
-	ensureNonEmptyStringField(siteConfig, 'title');
-	ensureNonEmptyStringField(siteConfig, 'siteAdminGoogleAccount');
-	ensureNonEmptyStringField(siteConfig, 'googleSheetId');
-	ensureNonEmptyStringField(siteConfig, 'subdomain');
+	ensureNonEmptyStringField(siteConfig, "title", { siteId });
+	ensureNonEmptyStringField(siteConfig, "siteAdminGoogleAccount", { siteId });
+	ensureNonEmptyStringField(siteConfig, "googleSheetId", { siteId });
+	ensureNonEmptyStringField(siteConfig, "subdomain", { siteId });
 
 	return {
 		isValid: true,
@@ -145,20 +145,23 @@ export function validateSiteConfig(
 }
 
 function isRecord(tested: unknown): tested is Record<string, unknown> {
-	return typeof tested === 'object' && tested !== null;
+	return typeof tested === "object" && tested !== null;
 }
 
 function ensureNonEmptyStringField(
 	object: Record<string, unknown>,
 	fieldName: string,
+	context?: Record<string, string>,
 ) {
 	if (
 		!(fieldName in object &&
-			typeof object[fieldName] === 'string' &&
+			typeof object[fieldName] === "string" &&
 			object[fieldName].length > 0)
 	) {
 		throw Error(
-			'missing field "googleSheetId" or not string-valued or empty',
+			`missing field "${fieldName}" or not string-valued or empty, context: ${
+				context ? JSON.stringify(context) : "none"
+			}`,
 		);
 	}
 }

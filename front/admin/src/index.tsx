@@ -8,12 +8,15 @@ import { createStore } from "solid-js/store";
 import { StoreContext } from "./store/StoreContext";
 import { initialStore } from "./store/Store";
 import "solid-devtools";
+import { getGalreeFrontConfig } from "@frontCommon/config";
 
 const rootElement = document.getElementById("root");
 if (rootElement) {
 	const AppPage = lazy(() => import("./pages/app/AppPage"));
 
-	const [state, setState] = createStore(initialStore);
+	const [state, setState] = createStore(
+		initialStore(getGalreeFrontConfig<"admin">()),
+	);
 
 	render(
 		() => (

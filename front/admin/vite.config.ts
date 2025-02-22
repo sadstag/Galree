@@ -34,11 +34,10 @@ export default defineConfig(({ command }) => {
 
 	return ({
 		resolve: {
-			// alias: {
-			// 	"@ds": `${__dirname}/src/design-system`,
-			// 	"@context": `${__dirname}/src/context`,
-			// 	"@model": `${__dirname}/src/model`,
-			// },
+			alias: {
+				"@common": `${__dirname}/../../common`,
+				"@frontCommon": `${__dirname}/../common`,
+			},
 		},
 		plugins,
 		publicDir: "./public",

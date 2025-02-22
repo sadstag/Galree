@@ -1,16 +1,14 @@
 import { useContext } from "solid-js";
-import { getGalreeConfig } from "../../../config";
 import { listObjects, postObject } from "../../../google/storage";
 import { StoreContext } from "../../../../store/StoreContext";
 
 const ImagesPage = () => {
-	const config = getGalreeConfig();
 	const { state } = useContext(StoreContext);
 
 	const handleListClick = async () => {
 		const bucketObjects = await listObjects(
-			config.bucket,
-			config.siteId,
+			state.config.bucket,
+			state.config.siteId,
 			state.accessToken,
 		);
 		console.log({ bucketObjects });
@@ -18,8 +16,8 @@ const ImagesPage = () => {
 
 	const handlePutClick = async () => {
 		const response = await postObject(
-			config.bucket,
-			`${config.siteId}/${Math.ceil(Math.random() * 10000)}.txt`,
+			state.config.bucket,
+			`${state.config.siteId}/${Math.ceil(Math.random() * 10000)}.txt`,
 			state.accessToken,
 		);
 		console.log({ putObjectResponse: response });

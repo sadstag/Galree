@@ -5,7 +5,7 @@
 		"module": "ESNext",
 		"lib": ["ES2020", "DOM", "DOM.Iterable"],
 		"skipLibCheck": true,
-		"types": ["vite/client", "google.accounts"],
+		"types": ["vite/client", "google.accounts", "../../common", "../common"],
 
 		/* Bundler mode */
 		"moduleResolution": "bundler",
@@ -20,14 +20,13 @@
 		"strict": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
-		"noFallthroughCasesInSwitch": true
+		"noFallthroughCasesInSwitch": true,
 
 		/* Aliases */
-		// "paths": {
-		// 	"@ds/*": ["./src/design-system/*"],
-		// 	"@context/*": ["./src/context/*"],
-		// 	"@model/*": ["./src/model/*"]
-		// }
+		"paths": {
+			"@frontCommon/*": ["../common/*"],
+			"@common/*": ["../../common/*"]
+		}
 	},
 	"include": ["src"]
 

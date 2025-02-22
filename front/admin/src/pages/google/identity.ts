@@ -37,7 +37,7 @@ export async function requestAccessToken(
 
     const tokenResponse = await new Promise<
         google.accounts.oauth2.TokenResponse
-    >((resolve, reject) => {
+    >((resolve) => {
         // TODO timeout ?
         const tokenClient = google.accounts.oauth2.initTokenClient({
             client_id,

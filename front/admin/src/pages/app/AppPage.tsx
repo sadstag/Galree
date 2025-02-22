@@ -5,6 +5,7 @@ import { createSignal, For, lazy, useContext, type Component } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import CatalogPage from "./subpages/catalog/CatalogPage";
 import { StoreContext } from "../../store/StoreContext";
+import { PublicDatabaseLoader } from "./PublicDatabaseLoader";
 
 const Tabs = ["Catalog", "Images"] as const;
 type Tab = (typeof Tabs)[number];
@@ -41,6 +42,7 @@ const AppPage = () => {
 					)}
 				</For>
 			</nav>
+			<PublicDatabaseLoader />
 			<div class={styles.content}>
 				<Dynamic component={contentComponents[selectedTab()]} />
 			</div>

@@ -9,6 +9,7 @@
     "run-dev": "deno run  --allow-read --allow-run src/run-dev.ts"
   },
   "imports": {
+    "@biomejs/biome": "npm:@biomejs/biome@^1.9.4",
     "@eta-dev/eta": "jsr:@eta-dev/eta@^3.5.0",
     "@google-cloud/storage": "npm:@google-cloud/storage@^7.15.0",
     "@google-cloud/storage-control": "npm:@google-cloud/storage-control@^0.2.0",

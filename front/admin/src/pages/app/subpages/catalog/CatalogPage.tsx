@@ -1,13 +1,12 @@
 import { useContext } from "solid-js";
 import { StoreContext } from "../../../../store/StoreContext";
-import { getGalreeConfig } from "../../../config";
 import { getSheetData } from "../../../google/sheet";
 
 const CatalogPage = () => {
 	const { state } = useContext(StoreContext);
 	const loadSheet = async () => {
 		const sheetData = await getSheetData(
-			getGalreeConfig().googleSheetId,
+			state.config.googleSheetId,
 			state.accessToken,
 		);
 		console.log({ sheetData });
