@@ -4,6 +4,14 @@ import { defineConfig } from "vite";
 import solid from "vite-plugin-solid";
 import { EtaPlugin } from "./eta.plugin";
 
+devtools({
+	locator: {
+		targetIDE: "vscode",
+		componentLocation: true,
+		jsxLocation: true,
+	},
+});
+
 export default defineConfig(({ command }) => {
 	const isBuildingForPreview = command === "build" &&
 		process.argv.includes("--for-preview");

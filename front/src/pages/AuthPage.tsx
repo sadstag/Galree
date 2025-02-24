@@ -40,6 +40,30 @@ const AuthPage = () => {
 	const preload = usePreloadRoute();
 	const { state, setState } = useContext(StoreContext);
 
+	if (import.meta.env.DEV) {
+		const unparsedUser = window.localStorage.getItem("user");
+
+		if (unparsedUser) {
+			console.log("DEV mode, loading user data from localStorage");
+			let parsedUser: AccessTokenRequestResponse | undefined;
+			try {
+				parsedUser = JSON.parse(unparsedUser);
+			} catch (_) {
+				console.log("Invalid json in localStorage, key=user, removing it");
+				window.localStorage.removeItem("user");
+			}
+
+			if (parsedUser) {
+				setState(
+					produce((state) => {
+						state.user = parsedUser;
+					}),
+				);
+				navigate("/admin/in");
+			}
+		}
+	}
+
 	const [authOutcome, setAuthOutcome] = createSignal<AuthOutcome>({
 		outcome: "unauthenticated",
 	});
@@ -62,17 +86,20 @@ const AuthPage = () => {
 
 		if (
 			await isExpectedUser(
-				response.userInfo.email,
+				response.info.email,
 				state.config.hashed_siteAdminGoogleAccount,
 				state.config.hashSalt,
 			)
 		) {
 			setState(
 				produce((state) => {
-					state.accessToken = response.accessToken;
-					state.userInfo = response.userInfo;
+					state.user = response;
 				}),
 			);
+			if (import.meta.env.DEV) {
+				console.log("DEV mode, saving user data in localStorage");
+				window.localStorage.setItem("user", JSON.stringify(response));
+			}
 			navigate("/admin/in");
 		} else {
 			setAuthOutcome({
@@ -105,7 +132,7 @@ const AuthPage = () => {
 				<>
 					<div>
 						Signed in as{" "}
-						{authOutcomeAsUnexpectedUser(authOutcome())?.userInfo.email}
+						{authOutcomeAsUnexpectedUser(authOutcome())?.info.email}
 					</div>
 					<p>
 						You were not expected. Maybe you have several google account and did

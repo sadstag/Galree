@@ -27,7 +27,8 @@ async function loadGoogleIdentityServiceScript(): Promise<void> {
 
 export type AccessTokenRequestResponse = {
     accessToken: string;
-    userInfo: UserInfo;
+    info: UserInfo;
+    expiresAt: number;
 };
 
 export async function requestAccessToken(
@@ -48,9 +49,12 @@ export async function requestAccessToken(
     });
 
     const accessToken = tokenResponse.access_token;
+
     return {
         accessToken,
-        userInfo: await getUserInfo(accessToken),
+        info: await getUserInfo(accessToken),
+        expiresAt: Date.now() +
+            1000 * (Number.parseInt(tokenResponse.expires_in, 10) - 10),
     };
 }
 

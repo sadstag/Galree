@@ -49,13 +49,24 @@ export function generateSWSTomlConfig(
 			// rewrites
 			// every route managed by the front app must be rewriten to avoid 404
 			//
-			'rewrites': [{
-				'source': '/artwork/*',
-				'destination': '/',
-			}, {
-				'source': '/presentation',
-				'destination': '/',
-			}],
+			'rewrites': [
+				{
+					'source': '/admin',
+					'destination': '/',
+				},
+				{
+					'source': '/admin/in',
+					'destination': '/',
+				},
+				{
+					'source': '/artwork/*',
+					'destination': '/',
+				},
+				{
+					'source': '/presentation',
+					'destination': '/',
+				},
+			],
 			'virtual-hosts': [] as VirtualHostConfig[],
 		},
 	};

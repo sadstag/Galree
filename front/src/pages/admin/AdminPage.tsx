@@ -1,7 +1,14 @@
 import styles from "./AdminPage.module.css";
 import { Header } from "./layout/Header";
 import { useNavigate } from "@solidjs/router";
-import { createSignal, For, lazy, useContext, type Component } from "solid-js";
+import {
+	createSignal,
+	For,
+	lazy,
+	Suspense,
+	useContext,
+	type Component,
+} from "solid-js";
 import { Dynamic } from "solid-js/web";
 import CatalogPage from "./subpages/catalog/CatalogPage";
 import { StoreContext } from "../../store/StoreContext";
@@ -20,7 +27,7 @@ const AdminPage = () => {
 
 	const { state } = useContext(StoreContext);
 
-	if (!state.accessToken) {
+	if (!state.user) {
 		console.warn("in /admin/in and no access token, redirecting to /admin...");
 		navigate("/admin");
 		return;
@@ -42,10 +49,13 @@ const AdminPage = () => {
 					)}
 				</For>
 			</nav>
-			<PublicDatabaseLoader />
-			<div class={styles.content}>
-				<Dynamic component={contentComponents[selectedTab()]} />
-			</div>
+			<Suspense fallback={<div>Loading ...</div>}>
+				<PublicDatabaseLoader>
+					<div class={styles.content}>
+						<Dynamic component={contentComponents[selectedTab()]} />
+					</div>
+				</PublicDatabaseLoader>
+			</Suspense>
 		</article>
 	);
 };

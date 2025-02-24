@@ -8,7 +8,7 @@
 	align-items: center;
 
 	background-color: hsl(60deg, 100%, 90%);
-	border-bottom: thin solid black;
+	border-bottom: medium solid black;
 
 	> .logo {
 		flex-grow: 0;
@@ -26,11 +26,11 @@
 			margin-left: 20px;
 		}
 
-		> img {
+		/* > img {
 			flex-grow: 0;
 			height: 80px;
 			width: 80px;
 			border-radius: 40px;
-		}
+		} */
 	}
 }

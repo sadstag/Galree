@@ -61,28 +61,32 @@ async function main() {
 	info('');
 
 	//
-	// 5 - Settings CORS for pubolic bucket
+	// 5 - Settings CORS for public bucket
 	//
+	stepBegins('Ensuring CORS for bucket: ' + public_bucket);
+
+	const corsAllowedOrigins = [
+		'http://localhost:5173',
+	];
 	for (
 		const { subdomain } of Object.values(
 			siteConfigs,
 		)
 	) {
-		const corsOrigin = 'http://' + domain + '.' + subdomain;
-
-		stepBegins('Ensuring CORS for bucket: ' + public_bucket);
-		try {
-			await setBucketCORS(public_bucket, storage, [corsOrigin]);
-			stepEnds(
-				`Successfully set CORS for bucket "${public_bucket}"`,
-			);
-		} catch (e) {
-			die(
-				"Could not set CORS for bucket '" +
-					public_bucket + "': " +
-					(e as Error).message,
-			);
-		}
+		corsAllowedOrigins.push('http://' + subdomain + '.' + domain);
+		corsAllowedOrigins.push('http://' + subdomain + '.' + domain + ':8080'); // local docker, domain names via /etc/hosts
+	}
+	try {
+		await setBucketCORS(public_bucket, storage, corsAllowedOrigins);
+		stepEnds(
+			`Successfully set CORS for bucket "${public_bucket}", allowed origins: ${corsAllowedOrigins}`,
+		);
+	} catch (e) {
+		die(
+			"Could not set CORS for bucket '" +
+				public_bucket + "': " +
+				(e as Error).message,
+		);
 	}
 
 	//
